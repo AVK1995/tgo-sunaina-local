@@ -37,7 +37,7 @@ import SiteFooter from '@/components/SiteFooter';
 
 import { asset } from './asset-version';
 import { legoBrick, legoDelay } from './lego-style';
-import { CHECKOUT_HREF, PRICE, SESSION_TIMES, START_DATE } from './offer';
+import { CHECKOUT_HREF, CTA_LABEL, CTA_NOTE, PRICE, SESSION_TIMES, START_DATE } from './offer';
 import {
   C,
   CtaNote,
@@ -45,10 +45,6 @@ import {
   PrimaryCTA,
   SectionHeading,
 } from './shared';
-
-/* The client's CTA copy, set from the source. The price is interpolated. */
-const CTA_LABEL = `Start Your 5-Day Morning Reset · ${PRICE}`;
-const CTA_NOTE = "Full Refund If You Don't Love Day One";
 
 const rupees = (n: number) => `₹${n.toLocaleString('en-IN')}`;
 
@@ -398,10 +394,7 @@ function Results() {
    emphasis, muted type) and Option 2 is the lifted plum card that carries the
    click. The layout decides before the copy is read.
 
-   ⚠️ FLAG FOR ATUL: the source writes the button as "[Take Action · ₹497 →]".
-   The square brackets and the arrow are the copy's shorthand for "this is a
-   button", so the label renders as "Take Action · ₹497" with the page's arrow
-   token. If the brackets were meant literally, say so and they go back in. */
+   The button uses the standard CTA_LABEL, like every other in-page button. */
 function TwoOptions() {
   return (
     <section className="px-4 py-12 sm:py-20 lg:py-24" style={{ background: C.canvas }}>
@@ -473,7 +466,7 @@ function TwoOptions() {
             }}
           >
             <span className="inline-flex items-center gap-2.5">
-              Take Action · {PRICE}
+              {CTA_LABEL}
               <ArrowRight
                 weight="bold"
                 className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5"

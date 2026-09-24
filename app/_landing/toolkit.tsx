@@ -45,14 +45,8 @@ import Link from 'next/link';
 
 import { asset } from './asset-version';
 import { legoBrick, legoDelay } from './lego-style';
-import { CHECKOUT_HREF, PRICE } from './offer';
+import { CHECKOUT_HREF, CTA_LABEL, CTA_NOTE, PRICE } from './offer';
 import { C, MediaPlaceholder, SectionEyebrow } from './shared';
-
-/* The client's CTA copy, set from the source. ⚠️ FLAG FOR ATUL: the source
-   writes this label as "Get Instant Access· ₹497", with no space before the
-   separator. It is rendered exactly as written rather than quietly typeset. */
-const CTA_LABEL = `Get Instant Access· ${PRICE}`;
-const CTA_NOTE = "Full Refund If You Don't Love Day One";
 
 const rupees = (n: number) => `₹${n.toLocaleString('en-IN')}`;
 

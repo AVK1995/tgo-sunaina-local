@@ -3,136 +3,95 @@
 /**
  * The docked CTA (page chrome, not a section).
  *
- * Hidden until the hero has left the screen, and hidden AGAIN once the closing
- * recap is in view: a docked bar that duplicates a CTA the reader can already
- * see is two primaries, which is none. It docks in with the same brick motion
- * as everything else, on a short delay so it lands after the page has settled
- * rather than competing with it.
+ * Visible from the very first screen, with NO reveal delay or dock-in motion:
+ * it is server-rendered visible, so it paints with the page. It hides only once
+ * the closing recap is in view, because a docked bar duplicating a CTA the
+ * reader can already see is two primaries, which is none.
+ *
+ * Layout:
+ *   mobile   guarantee • start date
+ *                 [ CTA button ]
+ *   desktop  guarantee • start date ............... [ CTA button ]
  *
  * Because it hides at the final CTA it is never on screen at the foot of the
  * page, so it carries NO flow spacer.
  */
-import { ArrowRight, CalendarBlank, Clock } from '@phosphor-icons/react/dist/ssr';
+import { ArrowRight, ShieldCheck } from '@phosphor-icons/react/dist/ssr';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-import { CHECKOUT_HREF, PRICE, SESSION_TIMES, START_DATE } from './offer';
+import { CHECKOUT_HREF, CTA_LABEL_INSTANT, STICKY_NOTE } from './offer';
 import { C } from './shared';
 
-/* The client's CTA copy, set from the source. The price is interpolated. */
-const CTA_LABEL = `Start Your 5-Day Morning Reset · ${PRICE}`;
-
 export default function StickyCta() {
-  const [show, setShow] = useState(false);
+  const [atFinal, setAtFinal] = useState(false);
 
   useEffect(() => {
-    const hero = document.querySelector('[data-hero]');
     const final = document.querySelector('[data-final]');
-    if (!hero) return;
-
-    const state = { pastHero: false, atFinal: false };
-    const apply = () => setShow(state.pastHero && !state.atFinal);
+    if (!final) return;
 
     const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.target === hero) state.pastHero = !e.isIntersecting;
-          if (e.target === final) state.atFinal = e.isIntersecting;
-        }
-        apply();
-      },
+      ([e]) => setAtFinal(e.isIntersecting),
       { threshold: 0 },
     );
-
-    io.observe(hero);
-    if (final) io.observe(final);
+    io.observe(final);
     return () => io.disconnect();
   }, []);
 
   return (
-    <>
-      {/* No spacer. The bar hides once the final CTA is in view (see atFinal
-          above), so it is never on screen at the foot of the page and there is
-          nothing to reserve room for. A spacer here rendered as dead space
-          below the footer, which is exactly where it was most visible. */}
-      <div
-        className={`fixed inset-x-0 bottom-0 z-50 transition-opacity duration-300 ${
-          show ? 'kz-dock opacity-100' : 'pointer-events-none opacity-0'
-        }`}
+    <div
+      className={`fixed inset-x-0 bottom-0 z-50 transition-opacity duration-200 ${
+        atFinal ? 'pointer-events-none opacity-0' : 'opacity-100'
+      }`}
+      style={{
+        background: 'rgba(255,249,241,0.96)',
+        backdropFilter: 'blur(14px)',
+        WebkitBackdropFilter: 'blur(14px)',
+        borderTop: `1px solid ${C.lineStrong}`,
+        boxShadow: '0 -12px 36px -24px rgba(88,51,79,0.45)',
+        paddingBottom: 'env(safe-area-inset-bottom)',
+      }}
+    >
+      {/* The lit hairline that makes the bar read as a lifted surface rather
+          than as a panel taped to the bottom of the window. */}
+      <span
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-px"
         style={{
-          background: 'rgba(255,249,241,0.94)',
-          backdropFilter: 'blur(14px)',
-          WebkitBackdropFilter: 'blur(14px)',
-          borderTop: `1px solid ${C.lineStrong}`,
-          boxShadow: '0 -12px 36px -24px rgba(88,51,79,0.45)',
-          paddingBottom: 'env(safe-area-inset-bottom)',
+          background: `linear-gradient(90deg, transparent, ${C.goldMid}, transparent)`,
         }}
-      >
-        {/* The lit hairline that makes the bar read as a lifted surface rather
-            than as a panel taped to the bottom of the window. */}
-        <span
-          aria-hidden
-          className="absolute inset-x-0 top-0 h-px"
+      />
+
+      <div className="mx-auto flex max-w-[1180px] flex-col items-stretch gap-2 px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-8 sm:py-3">
+        <p
+          className="flex items-center justify-center gap-1.5 text-[12px] font-medium sm:justify-start sm:text-[13.5px]"
+          style={{ color: C.inkSoft }}
+        >
+          <ShieldCheck weight="fill" className="h-4 w-4 shrink-0" style={{ color: C.coral }} />
+          {STICKY_NOTE}
+        </p>
+
+        <Link
+          href={CHECKOUT_HREF}
+          data-cta
+          className="lego-press cta-shimmer group inline-flex min-h-[50px] w-full shrink-0 items-center justify-center gap-2 rounded-full px-6 text-[15px] font-bold sm:w-auto sm:px-8"
           style={{
-            background: `linear-gradient(90deg, transparent, ${C.goldMid}, transparent)`,
+            background: C.gold,
+            color: C.inkBody,
+            border: `1px solid ${C.goldDeep}`,
+            boxShadow: '0 14px 30px -14px rgba(88,51,79,0.5)',
+            ['--shimmer' as string]: 'rgba(255,255,255,0.45)',
           }}
-        />
-
-        <div className="mx-auto flex max-w-[1180px] items-center justify-between gap-3 px-4 py-3 sm:px-8">
-          <div className="min-w-0">
-            {/* The offer's own name, in the client's words. The full lockup
-                would truncate mid-quote on a phone, so the narrow width shows
-                the shorter half of the same name rather than a cut one. */}
-            <p
-              className="truncate font-display font-bold text-[15px] leading-tight sm:text-[16.5px]"
-              style={{ color: C.ink }}
-            >
-              <span className="sm:hidden">Start Your Morning Right</span>
-              <span className="hidden sm:inline">
-                5-Day &lsquo;Start Your Morning Right&rsquo; Challenge
-              </span>
-              <span className="mx-1.5" style={{ color: C.lineStrong }}>
-                ·
-              </span>
-              <span style={{ color: C.goldDeep }}>{PRICE}</span>
-            </p>
-            <p
-              className="mt-0.5 flex items-center gap-3 truncate text-[11.5px] sm:text-[12px]"
-              style={{ color: C.inkSoft }}
-            >
-              <span className="inline-flex shrink-0 items-center gap-1.5">
-                <CalendarBlank weight="bold" className="h-3 w-3" style={{ color: C.goldInk }} />
-                Starts {START_DATE}
-              </span>
-              <span className="hidden shrink-0 items-center gap-1.5 min-[420px]:inline-flex">
-                <Clock weight="bold" className="h-3 w-3" style={{ color: C.coralInk }} />
-                {SESSION_TIMES}
-              </span>
-            </p>
-          </div>
-
-          <Link
-            href={CHECKOUT_HREF}
-            data-cta
-            className="lego-press cta-shimmer group inline-flex min-h-[48px] shrink-0 items-center justify-center gap-2 rounded-full px-5 text-[14px] font-bold sm:px-7 sm:text-[15px]"
-            style={{
-              background: C.gold,
-              color: C.inkBody,
-              border: `1px solid ${C.goldDeep}`,
-              ['--shimmer' as string]: 'rgba(242,180,95,0.30)',
-            }}
-          >
-            <span className="inline-flex items-center gap-2">
-              <span className="sm:hidden">Reserve My Spot</span>
-              <span className="hidden sm:inline">{CTA_LABEL}</span>
-              <ArrowRight
-                weight="bold"
-                className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
-              />
-            </span>
-          </Link>
-        </div>
+        >
+          <span className="inline-flex items-center gap-2">
+            {CTA_LABEL_INSTANT}
+            <ArrowRight
+              weight="bold"
+              className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
+            />
+          </span>
+        </Link>
       </div>
-    </>
+    </div>
   );
 }

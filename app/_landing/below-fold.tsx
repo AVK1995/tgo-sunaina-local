@@ -1,13 +1,14 @@
 'use client';
 
 /**
- * Everything below the hero, in the order COPY-SOURCE.md sets out:
+ * Everything below the hero. Proof leads (2026-09-24): the testimonials sit
+ * directly under the hero, then the rest in the order COPY-SOURCE.md sets out:
  *
+ *   7  Testimonials ................... ./proof   ← moved up, first below hero
  *   3  Here's what you'll experience .. this file
  *   4  Your 5-Day Schedule ............ this file  ← the signature beat
  *   5  Daily live morning sessions .... this file
  *   6  Does this sound like you? ...... this file
- *   7  Testimonials + text wall ....... ./proof
  *   8  The toolkit .................... ./toolkit
  *   9  Meet your coach ................ ./close
  *  10  Why this works ................. ./close
@@ -38,15 +39,10 @@ import { useEffect, useRef, useState } from 'react';
 import Close from './close';
 import { legoBrick, legoDelay } from './lego-style';
 import { domAnimation, LazyMotion } from './motion-lite';
-import { CHECKOUT_HREF, PRICE, SESSION_TIMES } from './offer';
+import { CHECKOUT_HREF, CTA_LABEL, CTA_NOTE, SESSION_TIMES } from './offer';
 import Proof from './proof';
 import { C, SectionHeading } from './shared';
 import Toolkit from './toolkit';
-
-/* The client's CTA copy, set from the source. The price is interpolated, never
-   typed. */
-const CTA_LABEL = `Start Your 5-Day Morning Reset · ${PRICE}`;
-const CTA_NOTE = "Full Refund If You Don't Love Day One";
 
 /* Three beds, rotated. Not seven: the brand has three colours, and a card grid
    that cycles a rainbow reads as decoration rather than as a set. */
@@ -492,11 +488,11 @@ export default function BelowFold() {
      .bw-js is on the document. */
   return (
     <LazyMotion features={domAnimation}>
+      <Proof />
       <Experience />
       <Schedule />
       <SessionsBand />
       <Recognition />
-      <Proof />
       <Toolkit />
       <Close />
     </LazyMotion>
