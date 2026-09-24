@@ -14,8 +14,8 @@
  * Every price, date and session time comes from ./offer. Nothing here declares
  * one.
  *
- * The dark stage is the page's ONE dark section band, per the brief: light
- * theme only, hero in dark.
+ * The stage is LIGHT (2026-09-24): warm ivory with soft apricot and coral
+ * blooms, not the plum it used to be. Text on it uses the light-ground inks.
  */
 import {
   ArrowRight,
@@ -34,6 +34,9 @@ import BrandMark from './brand-mark';
 import { legoBrick, legoDelay } from './lego-style';
 import {
   CHECKOUT_HREF,
+  CTA_LABEL,
+  CTA_LABEL_RESERVE,
+  CTA_NOTE,
   LIVES_IMPACTED,
   PRICE,
   PRICE_RISES_TO,
@@ -43,12 +46,6 @@ import {
 } from './offer';
 import { asset } from './asset-version';
 import { C } from './shared';
-
-/* The CTA copy is the client's, so it is set here from the source rather than
-   paraphrased: label + the reassurance line welded under it. The price is
-   interpolated, never typed. */
-const CTA_LABEL = `Start Your 5-Day Morning Reset · ${PRICE}`;
-const CTA_NOTE = "Full Refund If You Don't Love Day One";
 
 /* LIVES_IMPACTED now comes from ./offer with every other figure on the page.
    It was declared here as a second copy of the same placeholder, so filling in
@@ -142,7 +139,7 @@ export function AnnouncementBar() {
 export function SiteHeader() {
   return (
     <div className="mx-auto flex max-w-[1180px] items-center justify-center px-5 pb-2 pt-6 sm:justify-start md:px-8">
-      <BrandMark height={76} onDark priority />
+      <BrandMark height={76} priority />
     </div>
   );
 }
@@ -176,9 +173,9 @@ export function Hero() {
             <span
               className="mx-auto inline-flex max-w-[620px] items-start gap-2.5 rounded-[26px] px-4 py-2.5 text-left text-[10.5px] font-bold uppercase leading-[1.6] tracking-[0.12em] lg:mx-0"
               style={{
-                background: 'rgba(242,180,95,0.10)',
-                border: '1px solid rgba(242,180,95,0.28)',
-                color: C.gold,
+                background: C.goldWash,
+                border: `1px solid ${C.lineStrong}`,
+                color: C.goldInk,
               }}
             >
               <span
@@ -197,16 +194,33 @@ export function Hero() {
                 highlighter pass. (C2/C3) */}
             <h1
               className="mt-7 font-display font-bold text-[34px] leading-[1.1] sm:text-[44px] lg:text-[54px]"
-              style={{ color: C.onDark }}
+              style={{ color: C.ink }}
             >
               Discover The 60-Min Morning Formula For More Energy, Better Focus
               &amp; Showing Up At Your Best{' '}
-              <span style={{ color: C.gold }}>in just 5 days</span>
+              <span style={{ color: C.goldDeep }}>in just 5 days</span>
             </h1>
+
+            {/* Mobile-only banner, straight under the headline. From lg up the
+                offer card beside the copy carries the artwork instead. Eager
+                and high priority: on a phone this is the first image on
+                screen. 1672x941 is the file's true size, so the frame is
+                reserved before it loads and nothing reflows. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={asset('/banner%20image/Sunaina.png')}
+              alt="S.T.A.R.T. Right 5-Day Morning Challenge with Sunaina"
+              width={1672}
+              height={941}
+              loading="eager"
+              fetchPriority="high"
+              className="mx-auto mt-6 block h-auto w-full max-w-[560px] rounded-2xl lg:hidden"
+              style={{ boxShadow: '0 18px 40px -26px rgba(88,51,79,0.45)' }}
+            />
 
             <p
               className="mx-auto mt-6 max-w-[600px] text-[16px] leading-[1.7] lg:mx-0"
-              style={{ color: C.onDarkMute }}
+              style={{ color: C.inkSoft }}
             >
               Experience 6 live, expert-guided mornings combining stillness,
               movement, affirmations, breathwork &amp; connection in one
@@ -226,7 +240,7 @@ export function Hero() {
                   background: C.gold,
                   color: C.inkBody,
                   border: `1px solid ${C.goldDeep}`,
-                  boxShadow: '0 16px 34px -16px rgba(0,0,0,0.55)',
+                  boxShadow: '0 14px 30px -14px rgba(88,51,79,0.5)',
                   ['--shimmer' as string]: 'rgba(255,255,255,0.55)',
                 }}
               >
@@ -243,7 +257,7 @@ export function Hero() {
             {/* Welded to the button, never floated away from it. */}
             <p
               className="mt-4 flex items-center justify-center gap-2 text-[13.5px] font-medium lg:justify-start"
-              style={{ color: C.onDarkMute }}
+              style={{ color: C.inkSoft }}
             >
               <ShieldCheck weight="fill" className="h-4 w-4" style={{ color: C.coral }} />
               {CTA_NOTE}
@@ -253,8 +267,8 @@ export function Hero() {
             <ul
               className="mt-9 flex flex-col items-stretch gap-px overflow-hidden rounded-2xl sm:flex-row"
               style={{
-                background: 'rgba(242,180,95,0.16)',
-                border: '1px solid rgba(242,180,95,0.16)',
+                background: C.line,
+                border: `1px solid ${C.line}`,
               }}
             >
               {HERO_FACTS.map(({ icon: Icon, text }, idx) => (
@@ -264,11 +278,11 @@ export function Hero() {
                   className="flex flex-1 items-center justify-center gap-2.5 px-4 py-3.5 text-[13px] font-semibold"
                   style={{
                     ...legoDelay(idx, 90),
-                    background: 'rgba(64,36,58,0.86)',
-                    color: C.onDark,
+                    background: C.canvas,
+                    color: C.ink,
                   }}
                 >
-                  <Icon weight="bold" className="h-4 w-4 shrink-0" style={{ color: C.gold }} />
+                  <Icon weight="bold" className="h-4 w-4 shrink-0" style={{ color: C.goldInk }} />
                   {text}
                 </li>
               ))}
@@ -290,7 +304,7 @@ export function Hero() {
                 background: C.canvas,
                 border: `1px solid ${C.lineStrong}`,
                 boxShadow:
-                  '0 0 0 8px rgba(242,180,95,0.07), 0 34px 70px -30px rgba(0,0,0,0.6)',
+                  '0 0 0 8px rgba(242,180,95,0.10), 0 30px 60px -32px rgba(88,51,79,0.45)',
               }}
             >
               {/* Art sits above the eyebrow. The offer composite goes HERE
@@ -359,7 +373,7 @@ export function Hero() {
                 }}
               >
                 <span className="inline-flex items-center gap-2.5">
-                  Reserve My Spot
+                  {CTA_LABEL_RESERVE}
                   <ArrowRight
                     weight="bold"
                     className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5"

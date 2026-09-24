@@ -59,20 +59,19 @@ export const WHATSAPP_INVITE = process.env.NEXT_PUBLIC_WHATSAPP_INVITE ?? '';
 export const CHECKOUT_HREF = '/checkout';
 
 /**
- * The CTA label and its reassurance line, as written in the source copy.
+ * The CTA labels, standardised (2026-09-24). Every button on the page reads
+ * from here, so a label change is one edit:
  *
- * The source uses four button labels across the page (Reserve My Spot, Get
- * Instant Access, Start Your 5-Day Morning Reset, Take Action). The repeated
- * one, under the hero and under the recap, is the primary. The other three are
- * exported so the sections that use them read from here rather than typing a
- * price into JSX.
+ *   CTA_LABEL ........... the hero button and every other in-page button
+ *   CTA_LABEL_RESERVE ... the button under the offer-card image in the hero
+ *   CTA_LABEL_INSTANT ... the docked sticky bar, with STICKY_NOTE above it
  *
  * The reassurance line is a SINGLE line in the source, used under every button,
  * so CTA_NOTE and CTA_NOTE_HERO are deliberately the same string here.
  */
-export const CTA_LABEL = `Start Your 5-Day Morning Reset · ${PRICE}`;
-export const CTA_LABEL_INSTANT = `Get Instant Access· ${PRICE}`;
-export const CTA_LABEL_ACTION = `Take Action · ${PRICE}`;
+export const CTA_LABEL = `Start Your 5-Day Reset • ${PRICE}`;
+export const CTA_LABEL_INSTANT = `Get Instant Access • ${PRICE}`;
 export const CTA_LABEL_RESERVE = 'Reserve My Spot';
+export const STICKY_NOTE = `100% Money-Back Guarantee • Starts ${START_DATE}`;
 export const CTA_NOTE = "Full Refund If You Don't Love Day One";
 export const CTA_NOTE_HERO = CTA_NOTE;

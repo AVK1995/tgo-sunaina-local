@@ -351,18 +351,19 @@ button {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
- *  THE HERO STAGE: atmosphere, never a flat plum fill (C5)
- *  Two apricot blooms and one coral bloom over a plum floor ramp, with a faint
- *  dot grid masked to nothing at the edges so it never ends on a hard line.
+ *  THE HERO STAGE: atmosphere, never a flat fill (C5)
+ *  A LIGHT stage: two apricot blooms and one coral bloom over an ivory-to-blush
+ *  ramp, with a faint dot grid masked to nothing at the edges so it never ends
+ *  on a hard line.
  * ═══════════════════════════════════════════════════════════════════════ */
 .kz-stage {
   position: relative;
   isolation: isolate;
   background:
-    radial-gradient(ellipse 62% 52% at 18% 6%, rgba(242, 180, 95, 0.17), transparent 62%),
-    radial-gradient(ellipse 54% 46% at 88% 24%, rgba(242, 180, 95, 0.1), transparent 64%),
-    radial-gradient(ellipse 46% 40% at 62% 96%, rgba(233, 111, 85, 0.12), transparent 66%),
-    linear-gradient(178deg, #6b4262 0%, #58334f 58%, #40243a 100%);
+    radial-gradient(ellipse 62% 52% at 18% 6%, rgba(242, 180, 95, 0.18), transparent 62%),
+    radial-gradient(ellipse 54% 46% at 88% 24%, rgba(242, 180, 95, 0.12), transparent 64%),
+    radial-gradient(ellipse 46% 40% at 62% 96%, rgba(233, 111, 85, 0.1), transparent 66%),
+    linear-gradient(178deg, #fff9f1 0%, #fdf3ea 58%, #fbede5 100%);
 }
 .kz-stage > * { position: relative; z-index: 2; }
 .kz-stage::after {
@@ -370,14 +371,14 @@ button {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background-image: radial-gradient(rgba(242, 180, 95, 0.16) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(169, 111, 23, 0.14) 1px, transparent 1px);
   background-size: 26px 26px;
   -webkit-mask-image: radial-gradient(ellipse 74% 62% at 50% 42%, #000 0%, transparent 78%);
   mask-image: radial-gradient(ellipse 74% 62% at 50% 42%, #000 0%, transparent 78%);
   opacity: 0.5;
   pointer-events: none;
 }
-/* The seam where the dark stage hands over to the cream page. */
+/* The seam where the stage hands over to the cream page. */
 .kz-stage-seam {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(224, 164, 79, 0.55), transparent);
