@@ -185,8 +185,8 @@ export function Hero() {
                   ['--dot-pulse' as string]: 'rgba(233,111,85,0.6)',
                 }}
               />
-              For Adults Ready To Upgrade Themselves, Elevate The Way They Live
-              &amp; Get More Out Of Every Day
+              For anyone who&rsquo;s started (and quit) every morning routine
+              they&rsquo;ve tried.
             </span>
 
             {/* ONE lit token in the headline: the promise's clock. Everything
@@ -196,9 +196,8 @@ export function Hero() {
               className="mt-7 font-display font-bold text-[34px] leading-[1.1] sm:text-[44px] lg:text-[54px]"
               style={{ color: C.ink }}
             >
-              Discover The 60-Min Morning Formula For More Energy, Better Focus
-              &amp; Showing Up At Your Best{' '}
-              <span style={{ color: C.goldDeep }}>in just 5 days</span>
+              Ease Anxiety. Feel Happier, Energised &amp; In Control{' '}
+              <span style={{ color: C.goldDeep }}>in Just 5 Mornings.</span>
             </h1>
 
             {/* Mobile-only banner, straight under the headline. From lg up the
@@ -222,10 +221,13 @@ export function Hero() {
               className="mx-auto mt-6 max-w-[600px] text-[16px] leading-[1.7] lg:mx-0"
               style={{ color: C.inkSoft }}
             >
-              Experience 6 live, expert-guided mornings combining stillness,
-              movement, affirmations, breathwork &amp; connection in one
-              deliberately sequenced practice for your mind, body &amp; inner
-              self. Starts {START_DATE}, live on Zoom.
+              <strong style={{ color: C.ink, fontWeight: 700 }}>No 5 AM alarms.</strong>{' '}
+              Just{' '}
+              <strong style={{ color: C.ink, fontWeight: 700 }}>5 live mornings with Sunaina</strong>:
+              combining yoga, dance, breathwork &amp; laughter in a fun group
+              experience you&rsquo;ll actually look forward to. Feel the
+              difference from Day One, or{' '}
+              <strong style={{ color: C.ink, fontWeight: 700 }}>get every rupee back</strong>.
             </p>
 
             <div className="mt-9 flex justify-center lg:justify-start">

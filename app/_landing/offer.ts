@@ -21,7 +21,7 @@ export const PRICE_PAISE = PRICE_RUPEES * 100;
 export const PRICE = `₹${PRICE_RUPEES.toLocaleString('en-IN')}`;
 /** The anchor the announcement bar names. Rising, per the source copy. */
 export const PRICE_RISES_TO = '₹1699';
-export const START_DATE = '5th October 2026';
+export const START_DATE = '12th October 2026';
 export const SESSION_TIMES = '7 AM - 8 AM IST';
 /**
  * One batch only on this challenge, so the "with timezone" variant is the same
