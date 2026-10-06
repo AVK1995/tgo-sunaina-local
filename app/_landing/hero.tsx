@@ -308,7 +308,7 @@ export function Hero() {
                   badge off the right edge. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={asset('/mockups/toolkit-overview.webp')}
+                src={asset('/mockups/toolkit-overview.png')}
                 alt="The complete S.T.A.R.T. Right toolkit: six guides, live sessions and community support"
                 className="mb-6 aspect-[3/2] w-full rounded-2xl object-cover"
               />
