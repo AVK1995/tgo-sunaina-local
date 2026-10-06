@@ -63,7 +63,9 @@ export const ga4ViewItem = (m: Money) => send('view_item', money(m));
 export const ga4AddToCart = (m: Money) => send('add_to_cart', money(m));
 export const ga4BeginCheckout = (m: Money) => send('begin_checkout', money(m));
 export const ga4AddPaymentInfo = (m: Money) => send('add_payment_info', money(m));
-export const ga4Purchase = (m: Money & { transactionId: string }) =>
+/** Free funnel: GA4's recommended lead event, fired on /thank-you. */
+export const ga4GenerateLead = () => send('generate_lead', { value: 0, currency: 'INR' });
+export const ga4Purchase =(m: Money & { transactionId: string }) =>
   send('purchase', { transaction_id: m.transactionId, ...money(m) });
 
 /* Some events should fire once per browser rather than on every click. The

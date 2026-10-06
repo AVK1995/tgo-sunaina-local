@@ -19,7 +19,7 @@ const RAW_PRICE = Number(process.env.NEXT_PUBLIC_PRICE_RUPEES);
 export const PRICE_RUPEES = Number.isFinite(RAW_PRICE) && RAW_PRICE > 0 ? RAW_PRICE : 497;
 export const PRICE_PAISE = PRICE_RUPEES * 100;
 export const PRICE = `₹${PRICE_RUPEES.toLocaleString('en-IN')}`;
-/** The anchor the announcement bar names. Rising, per the source copy. */
+/** The anchor the announcement bar named on the paid funnel. Kept, unrendered. */
 export const PRICE_RISES_TO = '₹1699';
 export const START_DATE = '12th October 2026';
 export const SESSION_TIMES = '7 AM - 8 AM IST';
@@ -54,9 +54,25 @@ export const LIVES_IMPACTED = WOMEN_SUPPORTED;
  */
 export const WHATSAPP_INVITE = process.env.NEXT_PUBLIC_WHATSAPP_INVITE ?? '';
 
-/** The next click is a payment. Every CTA on the page, including the docked
- *  bar, points here. */
-export const CHECKOUT_HREF = '/checkout';
+/**
+ * FREE FUNNEL (2026-10-06). The challenge is now free to join: Ads > Landing >
+ * CTA opens the registration modal > /thank-you. Nothing on the page asks for
+ * a payment any more.
+ *
+ * The price constants above are KEPT on purpose. The Razorpay routes, the
+ * webhook and the CAPI value fields still read them, and the paid funnel may
+ * come back. They are simply no longer rendered.
+ */
+export const FREE_LABEL = 'FREE';
+
+/**
+ * Every CTA on the page points here. It is a hash, not a route: the
+ * registration modal (register-modal.tsx) catches the click on any [data-cta]
+ * element and opens in place. Without JS the hash is a harmless no-op jump.
+ *
+ * The name is kept so the call sites did not all have to change.
+ */
+export const CHECKOUT_HREF = '#register';
 
 /**
  * The CTA labels, standardised (2026-09-24). Every button on the page reads
@@ -69,9 +85,9 @@ export const CHECKOUT_HREF = '/checkout';
  * The reassurance line is a SINGLE line in the source, used under every button,
  * so CTA_NOTE and CTA_NOTE_HERO are deliberately the same string here.
  */
-export const CTA_LABEL = `Start Your 5-Day Reset • ${PRICE}`;
-export const CTA_LABEL_INSTANT = `Get Instant Access • ${PRICE}`;
-export const CTA_LABEL_RESERVE = 'Reserve My Spot';
-export const STICKY_NOTE = `100% Money-Back Guarantee • Starts ${START_DATE}`;
-export const CTA_NOTE = "Full Refund If You Don't Love Day One";
+export const CTA_LABEL = 'Start Your 5-Day Reset • Join Free';
+export const CTA_LABEL_INSTANT = 'Register For Free';
+export const CTA_LABEL_RESERVE = 'Reserve My Free Spot';
+export const STICKY_NOTE = `100% Free • Starts ${START_DATE}`;
+export const CTA_NOTE = 'Free To Join · Limited Seats';
 export const CTA_NOTE_HERO = CTA_NOTE;

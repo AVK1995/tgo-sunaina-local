@@ -28,7 +28,20 @@ const ALLOWED: SendableEvent[] = [
   'AddToCart',
   'InitiateCheckout',
   'QualifiedLead',
+  /* Free funnel: a CTA opened the registration form. registration_complete
+     is deliberately NOT here, for the same reason Purchase is not: it is only
+     sent by /api/register, once the lead has actually reached Pabbly. */
+  'atc_event',
 ];
+
+/* Events on the free funnel carry value 0: nothing is being sold, and a
+   phantom ₹497 on every click would teach value optimisation a lie. */
+const ZERO_VALUE: SendableEvent[] = ['atc_event'];
+
+/* A browser-supplied event id, accepted only in this shape. It must match the
+   eventID the pixel fired with, or the browser and server copies of the same
+   click will not dedupe. */
+const CLIENT_EVENT_ID = /^[A-Za-z0-9_-]{8,80}$/;
 
 /* The two answers the checkout offers. Validated against this list rather than
    passed through, so a renamed form option cannot quietly ship a new string to
@@ -77,7 +90,12 @@ export async function POST(req: Request) {
   /* Dedup keys, deterministic so Meta's 48h window collapses double-fires:
      by email where we have one, otherwise by the browser's _fbp. */
   const seed = email || fbp || `${Date.now()}_${Math.random()}`;
-  const eventId = sha256Hex(`${seed}|${eventName}`);
+  const clientEventId =
+    typeof body.eventId === 'string' && CLIENT_EVENT_ID.test(body.eventId)
+      ? body.eventId
+      : '';
+  /* Where the browser also fired the pixel, its id wins so the pair dedupes. */
+  const eventId = clientEventId || sha256Hex(`${seed}|${eventName}`);
 
   const result = await sendCapiEvent({
     pixelId: CHECKOUT_CONFIG.meta.pixelId,
@@ -109,7 +127,7 @@ export async function POST(req: Request) {
         req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || undefined,
       clientUserAgent: req.headers.get('user-agent') ?? undefined,
     },
-    valueRupees: CHECKOUT_CONFIG.amountRupees,
+    valueRupees: ZERO_VALUE.includes(eventName) ? 0 : CHECKOUT_CONFIG.amountRupees,
     currency: CHECKOUT_CONFIG.currency,
     /* Only ever set on the two events fired from the checkout form; the
        landing-page events have no answer to send. */

@@ -85,7 +85,23 @@ export type StandardEvent =
  * It costs one Aggregated Event Measurement slot on iOS, where standard events
  * rank above custom ones. That is the known price.
  */
-export type CustomEvent = 'QualifiedLead';
+export type CustomEvent = 'QualifiedLead' | FreeFunnelEvent;
+
+/**
+ * The free funnel's two events, named by the media buyer (2026-10-06):
+ *
+ *   atc_event ............... a CTA was clicked and the registration form
+ *                             opened. Browser pixel + CAPI, deduped on a
+ *                             per-click event id.
+ *   registration_complete ... the form was submitted and the lead reached
+ *                             Pabbly. CAPI from /api/register (with the full
+ *                             form as match keys) + browser pixel on
+ *                             /thank-you, deduped on one shared event id.
+ *
+ * Neither name carries a condition word, which is what keeps them safe under
+ * the classification note above.
+ */
+export type FreeFunnelEvent = 'atc_event' | 'registration_complete';
 
 export type SendableEvent = StandardEvent | CustomEvent;
 

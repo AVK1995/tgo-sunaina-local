@@ -37,7 +37,14 @@ import SiteFooter from '@/components/SiteFooter';
 
 import { asset } from './asset-version';
 import { legoBrick, legoDelay } from './lego-style';
-import { CHECKOUT_HREF, CTA_LABEL, CTA_NOTE, PRICE, SESSION_TIMES, START_DATE } from './offer';
+import {
+  CHECKOUT_HREF,
+  CTA_LABEL,
+  CTA_NOTE,
+  FREE_LABEL,
+  SESSION_TIMES,
+  START_DATE,
+} from './offer';
 import {
   C,
   CtaNote,
@@ -601,10 +608,10 @@ function Recap() {
             GET EVERYTHING TODAY FOR
           </p>
           <p className="kz-price kz-lit mt-3 font-display font-bold text-[56px] leading-none">
-            {PRICE}
+            {FREE_LABEL}
           </p>
           <p className="mt-2 text-[13px]" style={{ color: C.inkSoft }}>
-            (One-time payment)
+            (No payment required · Limited seats)
           </p>
         </div>
 
@@ -631,7 +638,7 @@ function Colophon() {
         <span aria-hidden className="hidden sm:inline">
           {' · '}
         </span>
-        <span className="block sm:inline">{PRICE}, 100% Money-Back Guarantee</span>
+        <span className="block sm:inline">Free To Join · Limited Seats</span>
       </p>
     </SiteFooter>
   );

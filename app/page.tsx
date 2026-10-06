@@ -12,6 +12,7 @@ import dynamic from 'next/dynamic';
 import FunnelTracker from '@/components/FunnelTracker';
 
 import { AnnouncementBar, Hero } from './_landing/hero';
+import RegisterModal from './_landing/register-modal';
 import { C } from './_landing/shared';
 import StickyCta from './_landing/sticky-cta';
 
@@ -32,6 +33,8 @@ export default function Page() {
       <Hero />
       <BelowFold />
       <StickyCta />
+      {/* Free funnel: every [data-cta] on the page opens this. */}
+      <RegisterModal />
     </main>
   );
 }

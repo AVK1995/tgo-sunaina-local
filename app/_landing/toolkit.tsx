@@ -45,7 +45,7 @@ import Link from 'next/link';
 
 import { asset } from './asset-version';
 import { legoBrick, legoDelay } from './lego-style';
-import { CHECKOUT_HREF, CTA_LABEL, CTA_NOTE, PRICE } from './offer';
+import { CHECKOUT_HREF, CTA_LABEL, CTA_NOTE, FREE_LABEL } from './offer';
 import { C, MediaPlaceholder, SectionEyebrow } from './shared';
 
 const rupees = (n: number) => `₹${n.toLocaleString('en-IN')}`;
@@ -354,13 +354,13 @@ export default function Toolkit() {
             className="mt-7 text-[11px] font-bold uppercase tracking-[0.2em]"
             style={{ color: C.goldInk }}
           >
-            ALL FOR JUST
+            YOURS TODAY FOR
           </p>
           <p className="kz-lit mt-2 font-display font-bold text-[52px] leading-none">
-            {PRICE}
+            {FREE_LABEL}
           </p>
           <p className="mt-2 text-[13px]" style={{ color: C.inkSoft }}>
-            (Introductory price increasing soon)
+            (Limited seats · No payment required)
           </p>
 
           <div className="mx-auto mt-8 flex max-w-[460px] flex-col items-center">

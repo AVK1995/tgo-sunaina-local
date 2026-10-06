@@ -79,16 +79,53 @@ export type PabblyPurchase = {
    empty one. */
 const s = (v: unknown) => (v == null ? '' : String(v));
 
-export async function sendPabblyPurchase(
+/**
+ * The free funnel's hand-off (2026-10-06). It posts to the SAME
+ * PABBLY_WEBHOOK_URL as a purchase, with the SAME keys, so the existing field
+ * mapping keeps working; the workflow tells the two apart on `event`
+ * ("registration" vs "purchase") and routes them on the Pabbly side.
+ *
+ * Payment fields go out as empty strings and amount as 0, never omitted: see
+ * the note on `s` above about Pabbly's mapper. `purchase_event_id` stays empty
+ * and the registration_complete event id rides in `meta_event_id` instead, so
+ * a registration can never be mistaken for a sale in the sheet.
+ */
+export type PabblyRegistration = Omit<
+  PabblyPurchase,
+  'paymentId' | 'orderId' | 'purchaseEventId' | 'amountRupees'
+> & { metaEventId: string };
+
+export function sendPabblyRegistration(
+  p: PabblyRegistration,
+): Promise<{ ok: boolean; status: number }> {
+  return post(
+    buildBody(
+      {
+        ...p,
+        paymentId: '',
+        orderId: '',
+        purchaseEventId: '',
+        amountRupees: 0,
+      },
+      'registration',
+      p.metaEventId,
+    ),
+    `registration ${p.leadId}`,
+  );
+}
+
+export function sendPabblyPurchase(
   p: PabblyPurchase,
 ): Promise<{ ok: boolean; status: number }> {
-  const url = process.env.PABBLY_WEBHOOK_URL ?? '';
-  if (!url) return { ok: false, status: 0 };
+  return post(buildBody(p, 'purchase', ''), `purchase ${p.paymentId}`);
+}
 
-  /* Built once, outside the retry loop: the body must be byte-identical across
-     attempts so a workflow that dedupes on payment_id sees one sale, not three
-     near-misses. */
-  const body = JSON.stringify({
+function buildBody(
+  p: PabblyPurchase,
+  event: 'purchase' | 'registration',
+  metaEventId: string,
+): string {
+  return JSON.stringify({
     lead_id: s(p.leadId),
     created_at: s(p.createdAt),
     first_name: s(p.firstName),
@@ -118,14 +155,28 @@ export async function sendPabblyPurchase(
     referrer: s(p.referrer),
     landing_url: s(p.landingUrl),
 
-    event: 'purchase',
+    event,
     payment_id: s(p.paymentId),
     order_id: s(p.orderId),
     name: `${s(p.firstName)} ${s(p.lastName)}`.trim(),
     currency: s(p.currency),
     product: s(p.product),
     occupation: s(p.occupation),
+    /* Added for the free funnel; empty on a purchase. Appended last so no
+       existing mapping shifts. */
+    meta_event_id: s(metaEventId),
   });
+}
+
+/* Built once by the caller, outside the retry loop: the body must be
+   byte-identical across attempts so a workflow that dedupes on payment_id (or
+   lead_id) sees one record, not three near-misses. */
+async function post(
+  body: string,
+  ref: string,
+): Promise<{ ok: boolean; status: number }> {
+  const url = process.env.PABBLY_WEBHOOK_URL ?? '';
+  if (!url) return { ok: false, status: 0 };
 
   const ATTEMPTS = 3;
   let status = 0;
@@ -148,7 +199,7 @@ export async function sendPabblyPurchase(
 
       if (res.ok) {
         if (attempt > 1) {
-          console.info(`[pabbly] purchase ${p.paymentId} sent on attempt ${attempt}`);
+          console.info(`[pabbly] ${ref} sent on attempt ${attempt}`);
         }
         return { ok: true, status: res.status };
       }
@@ -158,7 +209,7 @@ export async function sendPabblyPurchase(
       /* A 4xx is a deleted or re-generated workflow URL. No number of retries
          fixes that, and each one holds the webhook open for longer. */
       if (res.status >= 400 && res.status < 500) {
-        console.error(`[pabbly] workflow rejected ${p.paymentId}: ${res.status}`);
+        console.error(`[pabbly] workflow rejected ${ref}: ${res.status}`);
         return { ok: false, status: res.status };
       }
     } catch {
@@ -175,7 +226,7 @@ export async function sendPabblyPurchase(
   /* Loud, because nothing downstream will catch this: the sale is charged, the
      buyer is waiting, and no record of them reached the sheet. */
   console.error(
-    `[pabbly] purchase ${p.paymentId} FAILED after ${ATTEMPTS} attempts (last status ${status})`,
+    `[pabbly] ${ref} FAILED after ${ATTEMPTS} attempts (last status ${status})`,
   );
   return { ok: false, status };
 }
