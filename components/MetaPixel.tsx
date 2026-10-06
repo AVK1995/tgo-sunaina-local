@@ -11,7 +11,14 @@ import { captureFbclid } from '@/lib/client-signals';
  *
  * Everything else (ViewContent, AddToCart, InitiateCheckout, Purchase) goes
  * server-side through the Conversions API, so Meta counts one source of truth
- * per event and browser auto-detection cannot inflate it.
+ * per event and browser auto-detection cannot inflate it. The free funnel's
+ * atc_event and registration_complete are the exception: they fire from both
+ * sides with a shared event id (see lib/pixel.ts).
+ *
+ * The init carries advanced matching: the browser's external_id (the same
+ * `sr_external_id` lib/client-signals.ts sends to CAPI, created here if it
+ * does not exist yet) and, after a registration, the visitor's normalised
+ * details from `sr_am`. The pixel hashes them before sending.
  *
  * Renders nothing when the pixel id is absent, so a missing env var leaves no
  * broken script tag behind.
@@ -45,7 +52,11 @@ n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
 n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
 document,'script','https://connect.facebook.net/en_US/fbevents.js');
-fbq('init','${PIXEL_ID}');fbq('track','PageView');`}
+var am={};try{am=JSON.parse(localStorage.getItem('sr_am')||'{}')||{};
+var x=localStorage.getItem('sr_external_id');if(!x){x=(window.crypto&&crypto.randomUUID)?
+crypto.randomUUID():Date.now()+'-'+Math.random().toString(16).slice(2);
+localStorage.setItem('sr_external_id',x);}am.external_id=x;}catch(e){}
+fbq('init','${PIXEL_ID}',am);fbq('track','PageView');`}
       </Script>
       <noscript>
         {/* eslint-disable-next-line @next/next/no-img-element */}

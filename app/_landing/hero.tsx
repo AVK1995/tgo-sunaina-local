@@ -37,10 +37,9 @@ import {
   CTA_LABEL,
   CTA_LABEL_RESERVE,
   CTA_NOTE,
+  FREE_LABEL,
   LIVES_IMPACTED,
   PRICE,
-  PRICE_RISES_TO,
-  PRICE_RUPEES,
   SESSION_TIMES,
   START_DATE,
 } from './offer';
@@ -66,14 +65,11 @@ export function AnnouncementBar() {
   const segments = [
     <>
       <span className="font-bold">Special Offer:</span> 5-Day &lsquo;Start Your
-      Morning Right&rsquo; Challenge for{' '}
-      <span style={{ color: C.gold }}>{PRICE}</span>
+      Morning Right&rsquo; Challenge, now{' '}
+      <span style={{ color: C.gold }}>{FREE_LABEL}</span>
     </>,
-    <>
-      Price Increases To <span style={{ color: C.gold }}>{PRICE_RISES_TO}</span>{' '}
-      Tomorrow
-    </>,
-    <>100% Money-Back Guarantee</>,
+    <>Limited Seats Available</>,
+    <>100% Free · No Payment Required</>,
     <>
       Live · Starts {START_DATE} · {SESSION_TIMES}
     </>,
@@ -152,11 +148,6 @@ const HERO_FACTS = [
   { icon: VideoCamera, text: 'Live, Coach-Led Sessions' },
 ];
 
-/* The saving in the offer card is DERIVED from the two prices, never typed, so
-   it cannot drift when the price moves. The source writes it without a
-   thousands separator ("SAVE ₹1202"), which is what String() gives. */
-const SAVE = `₹${Number(PRICE_RISES_TO.replace(/[^\d]/g, '')) - PRICE_RUPEES}`;
-
 export function Hero() {
   return (
     <>
@@ -226,8 +217,8 @@ export function Hero() {
               <strong style={{ color: C.ink, fontWeight: 700 }}>5 live mornings with Sunaina</strong>:
               combining yoga, dance, breathwork &amp; laughter in a fun group
               experience you&rsquo;ll actually look forward to. Feel the
-              difference from Day One, or{' '}
-              <strong style={{ color: C.ink, fontWeight: 700 }}>get every rupee back</strong>.
+              difference from Day One, and it&rsquo;s{' '}
+              <strong style={{ color: C.ink, fontWeight: 700 }}>completely free to join</strong>.
             </p>
 
             <div className="mt-9 flex justify-center lg:justify-start">
@@ -339,26 +330,26 @@ export function Hero() {
                 Live on Zoom · {SESSION_TIMES} · 5 Expert-Guided Mornings
               </p>
 
-              {/* The value collapse, stated once: the price you pay lit, the
-                  anchor struck beside it, and the difference as a coral chip. */}
+              {/* The value collapse, stated once: FREE lit, the paid price
+                  struck beside it, and the scarcity as a coral chip. */}
               <div
                 className="mt-6 flex flex-wrap items-baseline gap-x-3 gap-y-2 border-t pt-6"
                 style={{ borderColor: C.line }}
               >
                 <span className="kz-lit font-display font-bold text-[46px] leading-none">
-                  {PRICE}
+                  {FREE_LABEL}
                 </span>
                 <span
                   className="font-display font-bold text-[22px] line-through"
                   style={{ color: C.inkSoft }}
                 >
-                  {PRICE_RISES_TO}
+                  {PRICE}
                 </span>
                 <span
                   className="inline-flex items-center rounded-full px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.16em]"
                   style={{ background: C.coralBed, color: C.coralInk }}
                 >
-                  SAVE {SAVE}
+                  LIMITED SEATS
                 </span>
               </div>
 
@@ -388,7 +379,7 @@ export function Hero() {
                 style={{ color: C.inkSoft }}
               >
                 <Lock weight="fill" className="h-3.5 w-3.5" style={{ color: C.goldInk }} />
-                100% Secure · UPI / Card / NetBanking
+                No Payment · No Card Required
               </p>
             </div>
           </div>
@@ -413,7 +404,7 @@ export function Hero() {
 const STATS = [
   { icon: Heart, big: LIVES_IMPACTED, small: 'Lives Impacted', bed: C.coralBed, fg: C.coralInk },
   { icon: Star, big: '15+ Years', small: 'Guided Practice & Teaching', bed: C.goldPale, fg: C.goldInk },
-  { icon: ShieldCheck, big: '100%', small: 'Money-Back Guarantee', bed: C.plumBed, fg: C.ink },
+  { icon: ShieldCheck, big: '100%', small: 'Free To Join', bed: C.plumBed, fg: C.ink },
   {
     icon: SealCheck,
     big: 'Certified',

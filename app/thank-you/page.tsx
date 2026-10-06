@@ -1,7 +1,8 @@
 'use client';
 
 /**
- * /thank-you, where a completed payment lands.
+ * /thank-you, where a completed FREE registration lands (2026-10-06; it was
+ * the post-payment page on the paid funnel).
  *
  * Copy and section order follow the ankita-postpartum thank-you page, which is
  * the house standard: confirmation, then the WhatsApp join as the ONE next
@@ -22,9 +23,7 @@
  * morning reset. The structure and the promises are unchanged.
  */
 
-import Link from 'next/link';
 import { Suspense, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
 
 import {
   ArrowRight,
@@ -44,16 +43,12 @@ import {
   X,
 } from '@phosphor-icons/react/dist/ssr';
 
-import {
-  PRICE,
-  SESSION_TIMES_TZ,
-  START_DATE,
-  WHATSAPP_INVITE,
-} from '../_landing/offer';
+import { SESSION_TIMES_TZ, START_DATE, WHATSAPP_INVITE } from '../_landing/offer';
 import BrandMark from '../_landing/brand-mark';
 import SiteFooter from '@/components/SiteFooter';
 import { C } from '../_landing/shared';
-import { trackPurchase } from '@/lib/track';
+import { takePendingRegistration } from '@/lib/pixel';
+import { trackRegistrationComplete } from '@/lib/track';
 
 /* WhatsApp's own brand colours. These deliberately do NOT come from the page
    palette: the community button is the same green on every funnel we ship, so
@@ -75,7 +70,7 @@ const COMMUNITY_BENEFITS: { icon: typeof CheckCircle; text: string }[] = [
 
 const POLICY_ITEMS = [
   'No rescheduling to future batches',
-  'No refunds for missed live sessions',
+  'Seats are limited, so join on time',
   'Recordings are not guaranteed',
 ];
 
@@ -95,14 +90,14 @@ export default function ThankYouPage() {
 }
 
 function ThankYou() {
-  const paymentId = useSearchParams().get('p') ?? '';
-
-  /* GA4 purchase only. Meta's Purchase and the server-side GA4 copy both come
-     from the Razorpay webhook, where the payment is proven and where buyers who
-     never return to this page are still counted. */
+  /* Free funnel: the browser copy of registration_complete, with the event id
+     /api/register already sent to CAPI, so Meta merges the two. Only fires
+     when the modal handed off a fresh registration: a refresh or a direct
+     visit finds nothing pending and sends nothing. */
   useEffect(() => {
-    if (paymentId) trackPurchase(paymentId);
-  }, [paymentId]);
+    const pending = takePendingRegistration();
+    if (pending) trackRegistrationComplete(pending.eventId);
+  }, []);
 
   return (
     <main style={{ background: C.canvasAlt }}>
@@ -164,15 +159,6 @@ function ThankYou() {
               footnote="One live session every morning"
             />
           </div>
-
-          {paymentId && (
-            <p
-              className="mt-6 text-[11.5px] font-medium uppercase tracking-[0.14em]"
-              style={{ color: C.inkSoft }}
-            >
-              Payment ID {paymentId} · {PRICE} paid
-            </p>
-          )}
         </div>
       </section>
 
@@ -361,11 +347,7 @@ function ThankYou() {
               Your spot has been reserved exclusively for you.
             </p>
             <p className="mt-1.5 text-[12.5px]" style={{ color: C.inkSoft }}>
-              (Our{' '}
-              <Link href="/refund-policy" className="underline" style={{ color: C.goldInk }}>
-                refund policy
-              </Link>{' '}
-              covers the Day One guarantee in full.)
+              (Free seats are limited, so please join the community now.)
             </p>
           </div>
         </div>

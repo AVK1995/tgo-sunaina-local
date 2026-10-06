@@ -6,11 +6,13 @@ import {
   ga4AddPaymentInfo,
   ga4AddToCart,
   ga4BeginCheckout,
+  ga4GenerateLead,
   ga4Purchase,
   ga4ViewItem,
   once,
   type Ga4Item,
 } from '@/lib/ga4';
+import { newEventId, pixelTrackCustom } from '@/lib/pixel';
 
 /**
  * The one place a page calls to record something. Each function fires the
@@ -44,13 +46,13 @@ type Person = {
 };
 
 /** Fire-and-forget: analytics must never block or fail a click. */
-function capi(eventName: string, person: Person = {}) {
+function capi(eventName: string, person: Person = {}, eventId?: string) {
   const s = collectSignals();
   try {
     void fetch('/api/meta/event', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ eventName, ...s, ...person }),
+      body: JSON.stringify({ eventName, eventId, ...s, ...person }),
       keepalive: true, // survives the navigation a CTA click causes
     });
   } catch {
@@ -63,6 +65,32 @@ export function trackViewItem() {
   once('view_item', () => {
     capi('ViewContent');
     ga4ViewItem(money);
+  });
+}
+
+/**
+ * FREE FUNNEL: a CTA was clicked and the registration form is opening.
+ *
+ * Fires on every open, not once per session: the media buyer optimises on
+ * form opens, and each open is a distinct intent. One fresh event id per
+ * click, shared by the pixel and CAPI copies so Meta merges them into one.
+ */
+export function trackRegisterOpen() {
+  const eventId = newEventId('atc');
+  pixelTrackCustom('atc_event', {}, eventId);
+  capi('atc_event', {}, eventId);
+}
+
+/**
+ * FREE FUNNEL: browser copy of registration_complete, fired on /thank-you
+ * with the event id /api/register already used for the CAPI copy. By then
+ * MetaPixel has re-initialised with the registrant's details as advanced
+ * matching, so this copy carries them too.
+ */
+export function trackRegistrationComplete(eventId: string) {
+  once(`registration_${eventId}`, () => {
+    pixelTrackCustom('registration_complete', {}, eventId);
+    ga4GenerateLead();
   });
 }
 
