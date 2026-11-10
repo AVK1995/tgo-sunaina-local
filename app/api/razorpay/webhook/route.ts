@@ -100,7 +100,7 @@ export async function POST(req: Request) {
         transactionId: paymentId,
         valueRupees,
         currency: CHECKOUT_CONFIG.currency,
-        itemId: 'sunaina-start-right-6day',
+        itemId: 'sunaina-sleep-workshop-2day',
         itemName: CHECKOUT_CONFIG.contentName,
       })
     : { ok: false, status: 0 };

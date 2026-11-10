@@ -24,8 +24,8 @@ import {
 
 const VALUE = PRICE_RUPEES;
 const ITEM: Ga4Item = {
-  item_id: 'sunaina-start-right-6day',
-  item_name: '5-Day Start Your Morning Right Challenge',
+  item_id: 'sunaina-sleep-workshop-2day',
+  item_name: '2-Day Sleep Like You Are 2 Again Workshop',
   price: VALUE,
   quantity: 1,
 };
@@ -39,7 +39,7 @@ type Person = {
   city?: string;
   /** ISO 3166-1 alpha-2, from the checkout's country picker. */
   country?: string;
-  /** `working_professional` | `homemaker`, from the checkout's select. */
+  /** The value of the checkout's "which best describes you" select. */
   occupation?: string;
 };
 

@@ -9,7 +9,7 @@ export const CHECKOUT_CONFIG = {
   amountRupees: PRICE_RUPEES,
   amountPaise: PRICE_PAISE,
   currency: 'INR',
-  contentName: '5-Day Start Your Morning Right Challenge',
+  contentName: '2-Day Sleep Like You Are 2 Again Workshop',
   /* ⚠️ PLACEHOLDER FALLBACK. The launch domain is not known yet, so this is
      still example.com. It is only reached when NEXT_PUBLIC_SITE_URL is unset
      or blank, but when it IS reached the value is sent to Meta as

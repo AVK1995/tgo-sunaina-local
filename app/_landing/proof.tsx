@@ -71,10 +71,9 @@ function PendingFrame({ label, note }: { label: string; note: string }) {
 export default function Proof() {
   return (
     <section className="px-4 py-12 sm:py-20 lg:py-24" style={{ background: C.canvas }}>
-      <SectionHeading sub="From busy professionals chasing bigger goals to homemakers constantly showing up for everyone else, these are real people who experienced S.T.A.R.T. Right to feel more energised, find greater calm & show up better for the life that matters to them.">
-        Don&rsquo;t Take Our Word For It.
-        <br className="hidden lg:inline" /> Hear From People Who&rsquo;ve
-        Experienced <span style={{ color: C.goldDeep }}>S.T.A.R.T. Right</span>
+      <SectionHeading>
+        From <span style={{ color: C.goldDeep }}>Better Sleep To Better Health</span>,
+        See The Changes People Have Experienced In Their Lives.
       </SectionHeading>
 
       {/* ── 7a · the exhibit frames ──────────────────────────────────────

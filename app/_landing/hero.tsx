@@ -1,82 +1,48 @@
 /**
- * Above-the-fold: the announcement strip, the header, the dark hero stage and
- * the trust ledger that straddles the seam beneath it.
+ * Above-the-fold: the announcement strip, the header and the hero stage.
  *
  * A pure Server Component (no 'use client', no hooks) so it paints from static
  * HTML with zero JavaScript on the critical path.
  *
- * COPY IS VERBATIM from COPY-SOURCE.md. Where a run-on line has been split
- * across elements the words and their order are untouched; nothing is
- * re-voiced, shortened or added. Two things the copy carries that need a human
- * decision are flagged at their call sites: the "#,###+" placeholder and the
- * "Price Increases To ₹1699 Tomorrow" line.
+ * Copy follows COPY-SOURCE.md. Every price, date and session time comes from
+ * ./offer. Nothing here declares one.
  *
- * Every price, date and session time comes from ./offer. Nothing here declares
- * one.
- *
- * The stage is LIGHT (2026-09-24): warm ivory with soft apricot and coral
- * blooms, not the plum it used to be. Text on it uses the light-ground inks.
+ * The stage is LIGHT: warm ivory with soft apricot and coral blooms. Text on it
+ * uses the light-ground inks.
  */
 import {
-  ArrowRight,
   CalendarBlank,
   Clock,
-  Heart,
-  Lock,
-  SealCheck,
-  ShieldCheck,
-  Star,
+  Translate,
   VideoCamera,
 } from '@phosphor-icons/react/dist/ssr';
-import Link from 'next/link';
 
 import BrandMark from './brand-mark';
-import { legoBrick, legoDelay } from './lego-style';
-import {
-  CHECKOUT_HREF,
-  CTA_LABEL,
-  CTA_LABEL_RESERVE,
-  CTA_NOTE,
-  LIVES_IMPACTED,
-  PRICE,
-  PRICE_RISES_TO,
-  PRICE_RUPEES,
-  SESSION_TIMES,
-  START_DATE,
-} from './offer';
 import { asset } from './asset-version';
-import { C } from './shared';
+import { legoDelay } from './lego-style';
+import {
+  CTA_LABEL,
+  CTA_SUBLABEL,
+  EVENTS,
+  PRICE,
+  WORKSHOP_DATES,
+  WORKSHOP_NAME,
+} from './offer';
+import { C, PrimaryCTA } from './shared';
 
-/* LIVES_IMPACTED now comes from ./offer with every other figure on the page.
-   It was declared here as a second copy of the same placeholder, so filling in
-   the real number in one place would have left the other still reading
-   "#,###+" with nothing to catch it. One declaration, one figure. */
-
-/* ══ 0 · Announcement strip (R10) ══════════════════════════════════════════
+/* ══ 0 · Announcement strip ════════════════════════════════════════════════
    A slim plum strip with one live coral dot and a slow shine, so it reads as
-   alive rather than as a static red sale bar. It names a specific price, a
-   specific anchor and a specific date, never "limited time".
-
-   ⚠️ FLAG FOR ATUL: "Price Increases To ₹1699 Tomorrow" is rendered verbatim
-   from the copy. On an evergreen page "Tomorrow" is a claim that stops being
-   true the day after launch. Either the campaign carries a real dated
-   deadline, or that segment needs re-wording by NO-BRAINER. Not silently
-   changed here. */
+   alive rather than as a static sale bar. Facts only: the source copy makes no
+   deadline or discount claim, so this does not either. */
 export function AnnouncementBar() {
   const segments = [
     <>
-      <span className="font-bold">Special Offer:</span> 5-Day &lsquo;Start Your
-      Morning Right&rsquo; Challenge for{' '}
+      <span className="font-bold">{WORKSHOP_NAME}</span> at just{' '}
       <span style={{ color: C.gold }}>{PRICE}</span>
     </>,
-    <>
-      Price Increases To <span style={{ color: C.gold }}>{PRICE_RISES_TO}</span>{' '}
-      Tomorrow
-    </>,
-    <>100% Money-Back Guarantee</>,
-    <>
-      Live · Starts {START_DATE} · {SESSION_TIMES}
-    </>,
+    <>Live · {WORKSHOP_DATES}</>,
+    <>Hindi &amp; English</>,
+    <>With Sunaina Setia</>,
   ];
 
   /* One copy of the strip. Rendered twice inside the track, which is what makes
@@ -146,32 +112,32 @@ export function SiteHeader() {
 
 /* ══ 1 · Hero ══════════════════════════════════════════════════════════════ */
 
-const HERO_FACTS = [
-  { icon: CalendarBlank, text: `Starts ${START_DATE}` },
-  { icon: Clock, text: SESSION_TIMES },
-  { icon: VideoCamera, text: 'Live, Coach-Led Sessions' },
+const WORKSHOP_FACTS = [
+  { icon: CalendarBlank, label: 'Dates', lines: EVENTS.map((e) => e.date) },
+  {
+    icon: Clock,
+    label: 'Timings',
+    lines: EVENTS.map((e) => `Day ${e.day} – ${e.time}`),
+  },
+  {
+    icon: VideoCamera,
+    label: 'Live Workshop',
+    lines: [`${EVENTS.length} ${EVENTS.length === 1 ? 'Day' : 'Days'}`],
+  },
+  { icon: Translate, label: 'Language', lines: ['Hindi & English'] },
 ];
-
-/* The saving in the offer card is DERIVED from the two prices, never typed, so
-   it cannot drift when the price moves. The source writes it without a
-   thousands separator ("SAVE ₹1202"), which is what String() gives. */
-const SAVE = `₹${Number(PRICE_RISES_TO.replace(/[^\d]/g, '')) - PRICE_RUPEES}`;
 
 export function Hero() {
   return (
     <>
-      <section data-hero className="kz-stage pb-24 pt-1">
+      <section data-hero className="kz-stage pb-16 pt-1">
         <SiteHeader />
 
-        <div className="mx-auto grid max-w-[1180px] items-center gap-9 px-5 pt-6 sm:gap-12 md:px-8 lg:grid-cols-[1.04fr_0.96fr] lg:gap-16 lg:pt-10">
+        <div className="mx-auto grid max-w-[1180px] items-center gap-9 px-5 pt-6 sm:gap-12 md:px-8 lg:grid-cols-[1.08fr_0.92fr] lg:gap-16 lg:pt-10">
           {/* ══ LEFT ══════════════════════════════════════════════════════ */}
           <div className="text-center lg:text-left">
-            {/* The gate line: who this is for, said before anything is sold.
-                The client's gate line is a full sentence rather than a chip, so
-                the radius is softened from a capsule to a plaque; every token,
-                the border, the dot and the type are the skin's. */}
             <span
-              className="mx-auto inline-flex max-w-[620px] items-start gap-2.5 rounded-[26px] px-4 py-2.5 text-left text-[10.5px] font-bold uppercase leading-[1.6] tracking-[0.12em] lg:mx-0"
+              className="mx-auto inline-flex max-w-[620px] items-center gap-2.5 rounded-[26px] px-4 py-2.5 text-left text-[11px] font-bold uppercase leading-[1.5] tracking-[0.12em] lg:mx-0"
               style={{
                 background: C.goldWash,
                 border: `1px solid ${C.lineStrong}`,
@@ -179,128 +145,56 @@ export function Hero() {
               }}
             >
               <span
-                className="lego-pulse-dot mt-1.5 inline-block h-2 w-2 shrink-0 rounded-full"
+                className="lego-pulse-dot inline-block h-2 w-2 shrink-0 rounded-full"
                 style={{
                   background: C.coral,
                   ['--dot-pulse' as string]: 'rgba(233,111,85,0.6)',
                 }}
               />
-              For anyone who&rsquo;s started (and quit) every morning routine
-              they&rsquo;ve tried.
+              {WORKSHOP_NAME}
             </span>
 
-            {/* ONE lit token in the headline: the promise's clock. Everything
-                else stays warm white, which is what stops the line reading as a
-                highlighter pass. (C2/C3) */}
+            <p
+              className="mt-6 font-display font-bold text-[19px] leading-snug sm:text-[22px]"
+              style={{ color: C.goldInk }}
+            >
+              What If Sleeping Peacefully Could Feel Natural Again?
+            </p>
+
+            {/* ONE lit token in the headline: the promise itself. */}
             <h1
-              className="mt-7 font-display font-bold text-[34px] leading-[1.1] sm:text-[44px] lg:text-[54px]"
+              className="mt-4 font-display font-bold text-[32px] leading-[1.12] sm:text-[42px] lg:text-[50px]"
               style={{ color: C.ink }}
             >
-              Ease Anxiety. Feel Happier, Energised &amp; In Control{' '}
-              <span style={{ color: C.goldDeep }}>in Just 5 Mornings.</span>
+              Learn How To Get{' '}
+              <span style={{ color: C.goldDeep }}>Deep, Restful Sleep</span> Even
+              If You&rsquo;ve Struggled With Sleepless Nights For Years
             </h1>
-
-            {/* Mobile-only banner, straight under the headline. From lg up the
-                offer card beside the copy carries the artwork instead. Eager
-                and high priority: on a phone this is the first image on
-                screen. 1672x941 is the file's true size, so the frame is
-                reserved before it loads and nothing reflows. */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={asset('/banner%20image/Sunaina.png')}
-              alt="S.T.A.R.T. Right 5-Day Morning Challenge with Sunaina"
-              width={1672}
-              height={941}
-              loading="eager"
-              fetchPriority="high"
-              className="mx-auto mt-6 block h-auto w-full max-w-[560px] rounded-2xl lg:hidden"
-              style={{ boxShadow: '0 18px 40px -26px rgba(88,51,79,0.45)' }}
-            />
 
             <p
               className="mx-auto mt-6 max-w-[600px] text-[16px] leading-[1.7] lg:mx-0"
               style={{ color: C.inkSoft }}
             >
-              <strong style={{ color: C.ink, fontWeight: 700 }}>No 5 AM alarms.</strong>{' '}
-              Just{' '}
-              <strong style={{ color: C.ink, fontWeight: 700 }}>5 live mornings with Sunaina</strong>:
-              combining yoga, dance, breathwork &amp; laughter in a fun group
-              experience you&rsquo;ll actually look forward to. Feel the
-              difference from Day One, or{' '}
-              <strong style={{ color: C.ink, fontWeight: 700 }}>get every rupee back</strong>.
+              Learn How To Fall Asleep Faster, Sleep Deeper &amp; Wake Up Feeling
+              Refreshed Every Morning{' '}
+              <strong style={{ color: C.ink, fontWeight: 700 }}>
+                Without More Sleeping Pills, Expensive Sleep Products Or Spending
+                Hours On Bedtime Rituals
+              </strong>
             </p>
 
-            <div className="mt-9 flex justify-center lg:justify-start">
-              {/* Shimmer, but no breath: the offer card beside it is the page's
-                  focal action and carries the one breathing CTA. Two breathing
-                  buttons on one screen is two primaries, which is none. */}
-              <Link
-                href={CHECKOUT_HREF}
-                data-cta
-                className="lego-press cta-shimmer group inline-flex min-h-[58px] w-full items-center justify-center gap-2.5 rounded-full px-8 font-body text-[15.5px] font-bold sm:w-auto"
-                style={{
-                  background: C.gold,
-                  color: C.inkBody,
-                  border: `1px solid ${C.goldDeep}`,
-                  boxShadow: '0 14px 30px -14px rgba(88,51,79,0.5)',
-                  ['--shimmer' as string]: 'rgba(255,255,255,0.55)',
-                }}
-              >
-                <span className="inline-flex items-center gap-2.5">
-                  {CTA_LABEL}
-                  <ArrowRight
-                    weight="bold"
-                    className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5"
-                  />
-                </span>
-              </Link>
+            <div className="mt-8 flex justify-center lg:justify-start">
+              <PrimaryCTA label={CTA_LABEL} sub={CTA_SUBLABEL} breathe />
             </div>
-
-            {/* Welded to the button, never floated away from it. */}
-            <p
-              className="mt-4 flex items-center justify-center gap-2 text-[13.5px] font-medium lg:justify-start"
-              style={{ color: C.inkSoft }}
-            >
-              <ShieldCheck weight="fill" className="h-4 w-4" style={{ color: C.coral }} />
-              {CTA_NOTE}
-            </p>
-
-            {/* The three facts, on a hairline rule rather than in boxes. */}
-            <ul
-              className="mt-9 flex flex-col items-stretch gap-px overflow-hidden rounded-2xl sm:flex-row"
-              style={{
-                background: C.line,
-                border: `1px solid ${C.line}`,
-              }}
-            >
-              {HERO_FACTS.map(({ icon: Icon, text }, idx) => (
-                <li
-                  key={text}
-                  data-lego=""
-                  className="flex flex-1 items-center justify-center gap-2.5 px-4 py-3.5 text-[13px] font-semibold"
-                  style={{
-                    ...legoDelay(idx, 90),
-                    background: C.canvas,
-                    color: C.ink,
-                  }}
-                >
-                  <Icon weight="bold" className="h-4 w-4 shrink-0" style={{ color: C.goldInk }} />
-                  {text}
-                </li>
-              ))}
-            </ul>
           </div>
 
-          {/* ══ RIGHT, the offer card ═════════════════════════════════════
-              The page's single focal object. There is no video and no
-              photography yet, so the offer itself is what catches the light:
-              an ivory card on the plum stage, with a local ink re-theme (C12).
-              When a coach clip or a session image lands, it slots in above
-              the eyebrow and nothing else has to change. */}
+          {/* ══ RIGHT, the workshop card ═════════════════════════════════════
+              The source's details table: Sunaina's picture and credentials,
+              then the four facts the reader needs before booking. */}
           <div>
             <div
               data-lego=""
-              className="rounded-[28px] p-7 sm:p-8"
+              className="overflow-hidden rounded-[28px]"
               style={{
                 ...legoDelay(2, 90),
                 background: C.canvas,
@@ -309,162 +203,64 @@ export function Hero() {
                   '0 0 0 8px rgba(242,180,95,0.10), 0 30px 60px -32px rgba(88,51,79,0.45)',
               }}
             >
-              {/* Art sits above the eyebrow. The offer composite goes HERE
-                  rather than in the mobile-only hero slot because this card is
-                  the conversion object, it shows at every breakpoint, and the
-                  artwork carries the ₹497 the card is asking for. 3/2 is the
-                  file's true ratio; forcing it to 16/9 would crop the price
-                  badge off the right edge. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={asset('/mockups/toolkit-overview.webp')}
-                alt="The complete S.T.A.R.T. Right toolkit: six guides, live sessions and community support"
-                className="mb-6 aspect-[3/2] w-full rounded-2xl object-cover"
+                src={asset('/workshop/sunaina-seated.jpg')}
+                alt="Sunaina Setia seated in a calm practice space"
+                width={688}
+                height={1280}
+                loading="eager"
+                fetchPriority="high"
+                className="aspect-[4/3] w-full object-cover"
+                style={{ objectPosition: '50% 20%' }}
               />
 
-              <span
-                className="inline-flex items-center rounded-full px-3 py-1.5 text-[10.5px] font-bold uppercase tracking-[0.18em]"
-                style={{ background: C.goldPale, color: C.goldInk }}
-              >
-                S.T.A.R.T. RIGHT METHOD
-              </span>
-
-              <h2
-                className="mt-4 font-display font-bold text-[26px] leading-[1.16]"
-                style={{ color: C.ink }}
-              >
-                5-Day &lsquo;Start Your Morning Right&rsquo; Challenge
-              </h2>
-              <p className="mt-2 text-[14px]" style={{ color: C.inkSoft }}>
-                Live on Zoom · {SESSION_TIMES} · 5 Expert-Guided Mornings
-              </p>
-
-              {/* The value collapse, stated once: the price you pay lit, the
-                  anchor struck beside it, and the difference as a coral chip. */}
-              <div
-                className="mt-6 flex flex-wrap items-baseline gap-x-3 gap-y-2 border-t pt-6"
-                style={{ borderColor: C.line }}
-              >
-                <span className="kz-lit font-display font-bold text-[46px] leading-none">
-                  {PRICE}
-                </span>
-                <span
-                  className="font-display font-bold text-[22px] line-through"
-                  style={{ color: C.inkSoft }}
+              <div className="p-6 sm:p-7">
+                <h2
+                  className="font-display font-bold text-[24px] leading-tight"
+                  style={{ color: C.ink }}
                 >
-                  {PRICE_RISES_TO}
-                </span>
-                <span
-                  className="inline-flex items-center rounded-full px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.16em]"
-                  style={{ background: C.coralBed, color: C.coralInk }}
+                  Sunaina Setia
+                </h2>
+                <p className="mt-1.5 text-[14px] leading-snug" style={{ color: C.inkSoft }}>
+                  <strong style={{ color: C.ink, fontWeight: 700 }}>
+                    15+ Years of Experience
+                  </strong>{' '}
+                  in Yoga, Mindfulness &amp; Personal Development
+                </p>
+
+                <ul
+                  className="mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-2xl"
+                  style={{ background: C.line, border: `1px solid ${C.line}` }}
                 >
-                  SAVE {SAVE}
-                </span>
+                  {WORKSHOP_FACTS.map(({ icon: Icon, label, lines }) => (
+                    <li key={label} className="p-3.5" style={{ background: C.canvas }}>
+                      <span
+                        className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.12em]"
+                        style={{ color: C.goldInk }}
+                      >
+                        <Icon weight="bold" className="h-3.5 w-3.5 shrink-0" />
+                        {label}
+                      </span>
+                      {lines.map((line) => (
+                        <span
+                          key={line}
+                          className="mt-1 block text-[13.5px] font-semibold leading-snug"
+                          style={{ color: C.ink }}
+                        >
+                          {line}
+                        </span>
+                      ))}
+                    </li>
+                  ))}
+                </ul>
               </div>
-
-              {/* THE breathing CTA. The only one on the page. */}
-              <Link
-                href={CHECKOUT_HREF}
-                data-cta
-                className="lego-press cta-shimmer cta-breath group mt-6 inline-flex min-h-[56px] w-full items-center justify-center gap-2.5 rounded-2xl font-body text-[15.5px] font-bold"
-                style={{
-                  background: C.gold,
-                  color: C.inkBody,
-                  border: `1px solid ${C.goldDeep}`,
-                  ['--shimmer' as string]: 'rgba(242,180,95,0.30)',
-                }}
-              >
-                <span className="inline-flex items-center gap-2.5">
-                  {CTA_LABEL_RESERVE}
-                  <ArrowRight
-                    weight="bold"
-                    className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5"
-                  />
-                </span>
-              </Link>
-
-              <p
-                className="mt-4 flex items-center justify-center gap-2 text-[11.5px] font-semibold uppercase tracking-[0.08em]"
-                style={{ color: C.inkSoft }}
-              >
-                <Lock weight="fill" className="h-3.5 w-3.5" style={{ color: C.goldInk }} />
-                100% Secure · UPI / Card / NetBanking
-              </p>
             </div>
           </div>
         </div>
       </section>
 
       <div className="kz-stage-seam" aria-hidden />
-      <TrustLedger />
     </>
-  );
-}
-
-/* ══ 2 · The trust ledger ══════════════════════════════════════════════════
-   Four figures on a ruled row, lifted so the card straddles the seam between
-   the dark stage and the cream page: the join is a designed object rather
-   than a colour change.
-
-   The source copy sets these with emoji (❤️ ⭐ 🛡️ 💯). They are rendered as
-   matched-weight line icons instead: emoji as UI is the single loudest
-   template tell, and it renders differently on every device the audience owns.
-   The words are untouched. */
-const STATS = [
-  { icon: Heart, big: LIVES_IMPACTED, small: 'Lives Impacted', bed: C.coralBed, fg: C.coralInk },
-  { icon: Star, big: '15+ Years', small: 'Guided Practice & Teaching', bed: C.goldPale, fg: C.goldInk },
-  { icon: ShieldCheck, big: '100%', small: 'Money-Back Guarantee', bed: C.plumBed, fg: C.ink },
-  {
-    icon: SealCheck,
-    big: 'Certified',
-    small: 'Yoga Teacher & Life Coach',
-    bed: C.goldPale,
-    fg: C.goldInk,
-  },
-];
-
-function TrustLedger() {
-  return (
-    <div className="relative z-10 mx-auto -mt-14 max-w-[1120px] px-5 md:px-8">
-      <ul
-        className="grid grid-cols-2 gap-x-5 gap-y-7 rounded-3xl px-6 py-8 sm:px-9 lg:grid-cols-4"
-        style={{
-          background: C.canvas,
-          border: `1px solid ${C.line}`,
-          boxShadow: '0 26px 54px -30px rgba(88,51,79,0.35)',
-        }}
-      >
-        {STATS.map(({ icon: Icon, big, small, bed, fg }, idx) => (
-          /* lego-hover-icon: the whole row is the hover target so the hit area
-             stays generous, but only the glyph moves. Lifting a figure drags
-             the eye off the number, which is the one thing worth reading. */
-          <li
-            key={small}
-            data-lego=""
-            className="lego-hover-icon flex items-center gap-3.5"
-            style={legoBrick(idx, 85)}
-          >
-            <span
-              data-lego-stud=""
-              className="lego-stud grid h-11 w-11 shrink-0 place-items-center rounded-full"
-              style={{ ...legoBrick(idx, 85), background: bed }}
-            >
-              <Icon weight="fill" className="h-5 w-5" style={{ color: fg }} />
-            </span>
-            <span className="leading-tight">
-              <span
-                className="block font-display font-bold text-[20px] "
-                style={{ color: C.ink }}
-              >
-                {big}
-              </span>
-              <span className="mt-0.5 block text-[12.5px]" style={{ color: C.inkSoft }}>
-                {small}
-              </span>
-            </span>
-          </li>
-        ))}
-      </ul>
-    </div>
   );
 }

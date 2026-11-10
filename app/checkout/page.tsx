@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * /checkout, the 5-Day 'Start Your Morning Right' Challenge.
+ * /checkout, the 2-Day 'Sleep Like You're 2 Again' Workshop.
  *
  * Built to the same pattern as the ankita-postpartum checkout, which is the
  * house standard for challenge funnels: header with a way back, a centred
@@ -27,11 +27,10 @@ import {
   CheckCircle,
   CreditCard,
   Lock,
-  ShieldCheck,
 } from '@phosphor-icons/react/dist/ssr';
 
 import { asset } from '../_landing/asset-version';
-import { CTA_NOTE, PRICE, PRICE_RUPEES, SESSION_TIMES_TZ, START_DATE } from '../_landing/offer';
+import { EVENT_SCHEDULE, PRICE, WORKSHOP_NAME } from '../_landing/offer';
 import PaymentLogos from '@/components/PaymentLogos';
 import BrandMark from '../_landing/brand-mark';
 import SiteFooter from '@/components/SiteFooter';
@@ -43,7 +42,7 @@ import {
 } from '@/lib/track';
 
 import { C } from '../_landing/shared';
-import { RECAP, VALUE_TOTAL, inr } from './included';
+import { BONUSES, LEAD_ITEM } from './included';
 
 declare global {
   interface Window {
@@ -95,14 +94,15 @@ const COUNTRIES: { iso: string; dial: string; label: string }[] = [
   { iso: 'de', dial: '+49', label: 'Germany (+49)' },
 ];
 
-/* Exactly the two halves the source copy names ("From busy professionals
-   chasing bigger goals to homemakers constantly showing up for everyone
-   else"), and no "other": a two-way split is the point of the question. The
-   VALUE is what travels to the webhook, so keep it stable even if the label is
-   reworded. */
+/* The audience groups the source copy names, so every buyer has a true answer.
+   The VALUE is what travels to the webhook, so keep it stable even if the label
+   is reworded. Meta's closed Occupation type only carries the first two values;
+   the others reach the order notes and Pabbly and are dropped from Meta. */
 const OCCUPATIONS = [
-  { value: 'working_professional', label: 'Working professional' },
-  { value: 'homemaker', label: 'Homemaker' },
+  { value: 'working_professional', label: 'Working professional / Corporate leader' },
+  { value: 'homemaker', label: 'Parent / Homemaker' },
+  { value: 'business_owner', label: 'Business owner / Entrepreneur' },
+  { value: 'retired', label: 'Senior citizen / Retired professional' },
 ];
 
 type Fields = {
@@ -231,7 +231,7 @@ export default function CheckoutPage() {
            silently 404s into a blank tile. JPG rather than WebP: the sheet is
            third-party surface and a plain raster is the safe format there. */
         image: `${window.location.origin}${asset('/brand/start-right-square.jpg')}`,
-        description: '5-Day Start Your Morning Right Challenge',
+        description: "2-Day Sleep Like You're 2 Again Workshop",
         prefill: {
           name: `${f.firstName.trim()} ${f.lastName.trim()}`.trim(),
           email: f.email.trim(),
@@ -265,7 +265,7 @@ export default function CheckoutPage() {
               style={{ background: C.goldWash, color: C.goldInk }}
             >
               <CheckCircle weight="fill" className="h-3 w-3 shrink-0" />
-              S.T.A.R.T. Right Method
+              {WORKSHOP_NAME}
             </span>
 
             <h1
@@ -275,7 +275,7 @@ export default function CheckoutPage() {
               Add your details to confirm your seat.
             </h1>
             <p className="mt-3 text-[13px] sm:text-[13.5px]" style={{ color: C.inkSoft }}>
-              Starts {START_DATE} · Live on Zoom · {SESSION_TIMES_TZ}
+              {EVENT_SCHEDULE} · Live Online
             </p>
           </div>
 
@@ -302,7 +302,7 @@ export default function CheckoutPage() {
                 Where should we send your seat?
               </h2>
               <p className="mt-2 text-[12.5px] sm:text-[13px]" style={{ color: C.inkSoft }}>
-                Your Zoom link, reminders and every bonus go to these.
+                Your joining link, reminders and every bonus go to these.
               </p>
 
               <div className="mt-6 flex flex-col gap-4">
@@ -408,7 +408,7 @@ export default function CheckoutPage() {
                     className="mb-1.5 block text-[10.5px] font-bold uppercase tracking-[0.16em]"
                     style={{ color: C.inkSoft }}
                   >
-                    Are you a working professional or a homemaker?
+                    Which best describes you?
                   </span>
                   <select
                     className="w-full rounded-xl px-4 py-3 text-[15px] outline-none"
@@ -462,7 +462,7 @@ export default function CheckoutPage() {
                 {busy ? 'Taking you to payment…' : `Pay ${PRICE} & Reserve My Spot`}
               </button>
 
-              {/* The three pointers that sit under every checkout CTA we ship.
+              {/* The pointers that sit under the checkout CTA.
                   Dot-separated on one line, each nowrap so a narrow phone wraps
                   BETWEEN them rather than mid-phrase. */}
               <div
@@ -475,8 +475,6 @@ export default function CheckoutPage() {
                 </span>
                 <span aria-hidden="true">·</span>
                 <span className="whitespace-nowrap">SSL Encrypted</span>
-                <span aria-hidden="true">·</span>
-                <span className="whitespace-nowrap">{CTA_NOTE}</span>
               </div>
 
               <p
@@ -533,15 +531,10 @@ function Header() {
   );
 }
 
-/* ── Order summary. Ported from the ankita-postpartum checkout, which is the
-      house standard, and re-skinned to this project's tokens. Same blocks in
-      the same order: lead item, included list, subtotal / bonus value, the
-      ruled Total, the method tile, then the guarantee line.
-      Accordion below lg, always open from lg up. ───────────────────────── */
+/* ── Order summary: lead item, included bonuses, the ruled Total, then the
+      method tile. Accordion below lg, always open from lg up. ───────────── */
 function OrderSummary() {
   const [open, setOpen] = useState(false);
-  const [lead, ...bonuses] = RECAP;
-  const bonusValue = VALUE_TOTAL - lead.value;
 
   return (
     <div
@@ -566,7 +559,7 @@ function OrderSummary() {
             className="mt-2 block font-display font-bold text-[20px] leading-snug sm:text-[22px]"
             style={{ color: C.ink }}
           >
-            The 5-Day Challenge, in full
+            The 2-Day Workshop, in full
           </span>
           <span className="mt-1 block text-[12px] lg:hidden" style={{ color: C.inkSoft }}>
             {open ? 'Tap to hide details' : 'Tap to view what is included'}
@@ -600,17 +593,17 @@ function OrderSummary() {
             className="text-[13.5px] font-semibold leading-snug sm:text-[14px]"
             style={{ color: C.ink }}
           >
-            {lead.title}
+            {LEAD_ITEM}
           </p>
           <p className="mt-0.5 text-[11px] sm:text-[11.5px]" style={{ color: C.inkSoft }}>
-            {START_DATE} · {SESSION_TIMES_TZ}
+            {EVENT_SCHEDULE}
           </p>
         </div>
         <div
           className="shrink-0 text-right font-display font-bold text-[14px] tabular-nums sm:text-[15px]"
           style={{ color: C.ink }}
         >
-          {inr(lead.value)}
+          {PRICE}
         </div>
       </div>
 
@@ -623,36 +616,18 @@ function OrderSummary() {
             Free bonuses included
           </p>
           <ul className="space-y-1.5 text-[12px] sm:text-[12.5px]" style={{ color: C.inkSoft }}>
-            {bonuses.map((r) => (
-              <li key={r.title} className="flex items-start gap-2">
+            {BONUSES.map((b) => (
+              <li key={b.title} className="flex items-start gap-2">
                 <CheckCircle
                   weight="fill"
                   className="mt-[3px] h-3.5 w-3.5 shrink-0"
                   style={{ color: C.coralInk }}
                 />
-                <span className="flex-1 leading-snug">{r.title}</span>
-                <span className="shrink-0 font-medium tabular-nums">{inr(r.value)}</span>
+                <span className="flex-1 leading-snug">{b.title}</span>
+                <span className="shrink-0 font-semibold">Free</span>
               </li>
             ))}
           </ul>
-        </div>
-
-        <div className="my-5 h-px" style={{ background: C.line }} />
-
-        <div className="space-y-2 text-[13.5px]">
-          <div className="flex justify-between" style={{ color: C.inkSoft }}>
-            <span>Subtotal</span>
-            <span className="tabular-nums">{inr(PRICE_RUPEES)}</span>
-          </div>
-          <div className="flex justify-between" style={{ color: C.inkSoft }}>
-            <span>Total bonus value</span>
-            <s
-              className="decoration-[2.5px] underline-offset-2 tabular-nums"
-              style={{ color: C.inkSoft, textDecorationColor: C.coralInk }}
-            >
-              {inr(bonusValue)}
-            </s>
-          </div>
         </div>
       </div>
 
@@ -676,9 +651,6 @@ function OrderSummary() {
           >
             {PRICE}
           </div>
-          <s className="text-[12px] tabular-nums sm:text-[12.5px]" style={{ color: C.inkSoft }}>
-            {inr(VALUE_TOTAL)}
-          </s>
         </div>
       </div>
 
@@ -697,14 +669,6 @@ function OrderSummary() {
           </p>
         </div>
       </div>
-
-      <p
-        className="mt-4 flex items-center justify-center gap-1.5 text-center text-[12px]"
-        style={{ color: C.inkSoft }}
-      >
-        <ShieldCheck weight="fill" className="h-3.5 w-3.5" style={{ color: C.goldInk }} />
-        {CTA_NOTE}
-      </p>
     </div>
   );
 }

@@ -1,3 +1,5 @@
+import { EVENTS, EVENT_SCHEDULE, Event_Dates, Event_Times } from '@/app/_landing/offer';
+
 /**
  * Pabbly Connect: the fulfilment hand-off.
  *
@@ -125,6 +127,14 @@ export async function sendPabblyPurchase(
     currency: s(p.currency),
     product: s(p.product),
     occupation: s(p.occupation),
+
+    /* The workshop schedule, so the emails Pabbly sends follow the same
+       variables as the site instead of carrying their own typed dates. */
+    event_dates: Event_Dates,
+    event_times: Event_Times,
+    event_schedule: EVENT_SCHEDULE,
+    first_event_date: s(EVENTS[0]?.date),
+    first_event_time: s(EVENTS[0]?.time),
   });
 
   const ATTEMPTS = 3;

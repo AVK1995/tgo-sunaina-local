@@ -19,38 +19,61 @@ const RAW_PRICE = Number(process.env.NEXT_PUBLIC_PRICE_RUPEES);
 export const PRICE_RUPEES = Number.isFinite(RAW_PRICE) && RAW_PRICE > 0 ? RAW_PRICE : 497;
 export const PRICE_PAISE = PRICE_RUPEES * 100;
 export const PRICE = `₹${PRICE_RUPEES.toLocaleString('en-IN')}`;
-/** The anchor the announcement bar names. Rising, per the source copy. */
-export const PRICE_RISES_TO = '₹1699';
-export const START_DATE = '12th October 2026';
-export const SESSION_TIMES = '7 AM - 8 AM IST';
-/**
- * One batch only on this challenge, so the "with timezone" variant is the same
- * string as SESSION_TIMES. Both exports stay, because the checkout, the
- * thank-you page and the terms all read the TZ one and a single batch today
- * does not mean a single batch on the next cohort.
- */
-export const SESSION_TIMES_TZ = '7 AM - 8 AM IST';
+
+export const WORKSHOP_NAME = '2-Day ‘Sleep Like You’re 2 Again’ Workshop';
 
 /**
- * The figure in the hero proof strip. Supplied by Atul 2026-09-18, replacing
- * the source copy's "#,###+" placeholder, which was rendered verbatim until
- * then so it could never ship invisibly.
+ * THE schedule. Two comma-separated lists, matched in order, so the first date
+ * goes with the first time. Add or remove a pair and every page follows.
  *
- * It is a claim about real people, so it is stated as a floor ("100+") rather
- * than a precise count nobody can evidence.
+ *   NEXT_PUBLIC_EVENT_DATES = 20th Nov, 21st Nov
+ *   NEXT_PUBLIC_EVENT_TIMES = 7 PM, 11 AM
+ *
+ * `||`, not `??`, so a key defined blank still falls back to the values here.
  */
-export const WOMEN_SUPPORTED = '100+';
-/** The label this project actually uses for the same figure. One declaration,
- *  so the two can never disagree. */
-export const LIVES_IMPACTED = WOMEN_SUPPORTED;
+export const Event_Dates = process.env.NEXT_PUBLIC_EVENT_DATES || '20th Nov, 21st Nov';
+export const Event_Times = process.env.NEXT_PUBLIC_EVENT_TIMES || '7 PM, 11 AM';
+
+const toList = (value: string) =>
+  value
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+/** "a", "a & b", "a, b & c". */
+const joinList = (items: string[], last: string) =>
+  items.length < 2
+    ? items.join('')
+    : `${items.slice(0, -1).join(', ')} ${last} ${items[items.length - 1]}`;
+
+const eventTimes = toList(Event_Times);
+
+/* A date with no matching time shows TBA rather than borrowing another day's
+   time, which would send someone to the wrong session. */
+export const EVENTS = toList(Event_Dates).map((date, i) => ({
+  day: i + 1,
+  date,
+  time: eventTimes[i] ?? 'Time TBA',
+}));
+
+/** "20th Nov & 21st Nov" */
+export const WORKSHOP_DATES = joinList(
+  EVENTS.map((e) => e.date),
+  '&',
+);
+/** "20th Nov at 7 PM and 21st Nov at 11 AM" */
+export const EVENT_SCHEDULE = joinList(
+  EVENTS.map((e) => `${e.date} at ${e.time}`),
+  'and',
+);
+/** "Day 1: 7 PM · Day 2: 11 AM" */
+export const SESSION_TIMES = EVENTS.map((e) => `Day ${e.day}: ${e.time}`).join(' · ');
 
 /**
- * The WhatsApp community invite. The thank-you page is built around joining it
- * as the single next step, and on this funnel the group is also a paid
- * deliverable ("The S.T.A.R.T. Right Inner Circle", listed at ₹997 value), so
- * an empty value here is a missing product, not just a missing link.
+ * The WhatsApp group invite. The thank-you page is built around joining it as
+ * the single next step, because the joining links are shared there.
  *
- * ⚠️ REQUIRED BEFORE LAUNCH. Create the group, take the invite link.
+ * ⚠️ REQUIRED BEFORE LAUNCH. Use an invite for THIS workshop's group.
  */
 export const WHATSAPP_INVITE = process.env.NEXT_PUBLIC_WHATSAPP_INVITE ?? '';
 
@@ -59,19 +82,9 @@ export const WHATSAPP_INVITE = process.env.NEXT_PUBLIC_WHATSAPP_INVITE ?? '';
 export const CHECKOUT_HREF = '/checkout';
 
 /**
- * The CTA labels, standardised (2026-09-24). Every button on the page reads
- * from here, so a label change is one edit:
- *
- *   CTA_LABEL ........... the hero button and every other in-page button
- *   CTA_LABEL_RESERVE ... the button under the offer-card image in the hero
- *   CTA_LABEL_INSTANT ... the docked sticky bar, with STICKY_NOTE above it
- *
- * The reassurance line is a SINGLE line in the source, used under every button,
- * so CTA_NOTE and CTA_NOTE_HERO are deliberately the same string here.
+ * The CTA, standardised. The source sets it as two lines in one box, so every
+ * button on the page reads both of these, and a label change is one edit.
  */
-export const CTA_LABEL = `Start Your 5-Day Reset • ${PRICE}`;
-export const CTA_LABEL_INSTANT = `Get Instant Access • ${PRICE}`;
-export const CTA_LABEL_RESERVE = 'Reserve My Spot';
-export const STICKY_NOTE = `100% Money-Back Guarantee • Starts ${START_DATE}`;
-export const CTA_NOTE = "Full Refund If You Don't Love Day One";
-export const CTA_NOTE_HERO = CTA_NOTE;
+export const CTA_LABEL = 'Yes! I Want To Sleep Better';
+export const CTA_SUBLABEL = `Join The Workshop at Just ${PRICE}`;
+export const STICKY_NOTE = `Live Workshop • ${WORKSHOP_DATES}`;

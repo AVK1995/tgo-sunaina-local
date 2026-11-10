@@ -42,8 +42,8 @@ export default function PrivacyPolicyPage() {
       <h2>2. How we use it</h2>
       <ul>
         <li>
-          To deliver the {LEGAL.product}: Zoom links, session reminders and the
-          included guides.
+          To deliver the {LEGAL.product}: joining links, session reminders and
+          the included bonuses.
         </li>
         <li>To answer your questions and provide support.</li>
         <li>To send transactional email related to your purchase.</li>

@@ -12,14 +12,6 @@
  * the point of the design: the Zoom links live in the group, so a buyer who
  * never joins is a refund waiting to happen. Everything else on the page is
  * subordinate to that one button.
- *
- * On THIS funnel the group is also a paid line item, "The S.T.A.R.T. Right
- * Inner Circle" at ₹997 of the stated value, so the join button is delivering
- * a product rather than only routing the buyer.
- *
- * Wording is adapted only where ankita's is factually about a different
- * product: physiotherapist becomes coach-led, postpartum recovery becomes the
- * morning reset. The structure and the promises are unchanged.
  */
 
 import Link from 'next/link';
@@ -46,9 +38,10 @@ import {
 
 import {
   PRICE,
-  SESSION_TIMES_TZ,
-  START_DATE,
+  SESSION_TIMES,
   WHATSAPP_INVITE,
+  WORKSHOP_DATES,
+  WORKSHOP_NAME,
 } from '../_landing/offer';
 import BrandMark from '../_landing/brand-mark';
 import SiteFooter from '@/components/SiteFooter';
@@ -66,10 +59,10 @@ const GOOD_GREEN = '#059669';
 const WARN_AMBER = '#D97706';
 
 const COMMUNITY_BENEFITS: { icon: typeof CheckCircle; text: string }[] = [
-  { icon: ChatCircleDots, text: 'Daily Zoom session links' },
-  { icon: Megaphone, text: 'Session reminders before class' },
+  { icon: ChatCircleDots, text: 'Workshop joining links' },
+  { icon: Megaphone, text: 'Session reminders before each session' },
   { icon: Notebook, text: 'Instructions for each day' },
-  { icon: Heart, text: 'Support across the 5 mornings' },
+  { icon: Heart, text: 'Support across both days' },
   { icon: Person, text: 'Important updates from Sunaina' },
 ];
 
@@ -83,7 +76,7 @@ const PREP_ITEMS = [
   'Wear comfortable clothes for movement',
   'Keep a yoga mat or soft surface ready',
   'Be in a distraction-free space',
-  'Join the community immediately',
+  'Join the WhatsApp group immediately',
 ];
 
 export default function ThankYouPage() {
@@ -110,7 +103,7 @@ function ThankYou() {
           The mark and nothing else. A buyer arrives here from a payment sheet
           or from an emailed link, and this is often the first surface that
           carries the brand at any size. No nav and no way back: the next step
-          is the Inner Circle button below, not a return to the sales page. */}
+          is the WhatsApp button below, not a return to the sales page. */}
       <header className="px-4 py-5 sm:px-6" style={{ background: C.plumDeep }}>
         <div className="mx-auto flex max-w-6xl justify-center sm:justify-start">
           <BrandMark height={46} onDark />
@@ -139,7 +132,7 @@ function ThankYou() {
             className="mt-5 font-display font-bold text-[30px] leading-[1.05] tracking-tight sm:text-[44px] lg:text-[52px]"
             style={{ color: C.ink, textWrap: 'balance' } as React.CSSProperties}
           >
-            Your 5-Day Morning Reset is{' '}
+            Your Sleep Workshop Seat is{' '}
             <span style={{ color: C.goldDeep }}>Confirmed.</span>
           </h1>
 
@@ -148,20 +141,18 @@ function ThankYou() {
             style={{ color: C.inkSoft }}
           >
             You are officially enrolled in the{' '}
-            <strong style={{ color: C.ink }}>
-              5-Day &lsquo;Start Your Morning Right&rsquo; Challenge.
-            </strong>{' '}
+            <strong style={{ color: C.ink }}>{WORKSHOP_NAME}.</strong>{' '}
             Please read this page carefully: your access depends on the next
             step.
           </p>
 
           <div className="mx-auto mt-8 grid max-w-lg gap-3 sm:grid-cols-2">
-            <DetailCard icon={CalendarBlank} label="Challenge date" value={START_DATE} />
+            <DetailCard icon={CalendarBlank} label="Workshop dates" value={WORKSHOP_DATES} />
             <DetailCard
               icon={Clock}
               label="Live session timings"
-              value={SESSION_TIMES_TZ}
-              footnote="One live session every morning"
+              value={SESSION_TIMES}
+              footnote="One live session each day"
             />
           </div>
 
@@ -197,14 +188,14 @@ function ThankYou() {
             </span>
 
             <h2 className="mt-4 font-display font-bold text-[24px] leading-tight sm:text-[34px]">
-              Join the S.T.A.R.T. Right Inner Circle now.
+              Join the workshop WhatsApp group now.
             </h2>
 
             <p className="mx-auto mt-3 max-w-md text-[14.5px] leading-relaxed text-white/90">
-              All updates, Zoom links, reminders and daily instructions will be
-              shared inside the Inner Circle on WhatsApp.{' '}
+              All updates, joining links, reminders and daily instructions will
+              be shared inside the WhatsApp group.{' '}
               <strong className="text-white">
-                Your access to the challenge depends on joining this group.
+                Your access to the workshop depends on joining this group.
               </strong>
             </p>
 
@@ -217,7 +208,7 @@ function ThankYou() {
                 style={{ color: WA.deep }}
               >
                 <WhatsappLogo weight="fill" className="h-5 w-5" />
-                Join the Community Here
+                Join the WhatsApp Group Here
                 <ArrowRight
                   weight="bold"
                   className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
@@ -248,7 +239,7 @@ function ThankYou() {
               style={{ color: C.ink }}
             >
               What you&rsquo;ll receive in the{' '}
-              <span style={{ color: C.goldDeep }}>Inner Circle.</span>
+              <span style={{ color: C.goldDeep }}>WhatsApp group.</span>
             </h2>
           </div>
 
@@ -283,7 +274,7 @@ function ThankYou() {
           >
             <Warning weight="fill" className="mr-1.5 inline-block h-4 w-4 align-text-bottom" />
             Please do <strong>not mute</strong> or{' '}
-            <strong>exit the community</strong> during these <strong>5 days</strong>.
+            <strong>exit the group</strong> until the <strong>workshop ends</strong>.
           </p>
         </div>
       </section>
@@ -365,7 +356,7 @@ function ThankYou() {
               <Link href="/refund-policy" className="underline" style={{ color: C.goldInk }}>
                 refund policy
               </Link>{' '}
-              covers the Day One guarantee in full.)
+              has the full details.)
             </p>
           </div>
         </div>
@@ -380,7 +371,7 @@ function ThankYou() {
               className="mt-3 font-display font-bold text-[24px] leading-tight sm:text-[32px]"
               style={{ color: C.ink }}
             >
-              What to do <span style={{ color: C.goldDeep }}>before the call.</span>
+              What to do <span style={{ color: C.goldDeep }}>before the workshop.</span>
             </h2>
             <p className="mt-3 text-[14.5px]" style={{ color: C.inkSoft }}>
               To get maximum results, please:
@@ -448,11 +439,10 @@ function ThankYou() {
             style={{ color: C.onDark }}
           >
             This is your <span style={{ color: C.gold }}>first step</span>
-            <br className="hidden sm:block" /> toward starting every day at your
-            best.
+            <br className="hidden sm:block" /> toward deep, restful sleep.
           </h2>
           <p className="mt-4 text-[14.5px]" style={{ color: C.onDarkMute }}>
-            Now, join the community and we&rsquo;ll see you inside.
+            Now, join the group and we&rsquo;ll see you inside.
           </p>
 
           {WHATSAPP_INVITE && (
@@ -465,7 +455,7 @@ function ThankYou() {
                 style={{ color: WA.deep }}
               >
                 <WhatsappLogo weight="fill" className="h-5 w-5" />
-                Join the Community
+                Join the WhatsApp Group
                 <ArrowRight
                   weight="bold"
                   className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
@@ -496,7 +486,7 @@ function ThankYou() {
               style={{ background: `linear-gradient(135deg, ${WA.deep}, ${WA.green})` }}
             >
               <WhatsappLogo weight="fill" className="h-5 w-5" />
-              Join the WhatsApp Community
+              Join the WhatsApp Group
               <ArrowRight weight="bold" className="h-4 w-4" />
             </a>
           </div>

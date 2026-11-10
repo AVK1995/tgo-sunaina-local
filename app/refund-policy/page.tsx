@@ -12,10 +12,9 @@ export const metadata: Metadata = {
 };
 
 /**
- * The refund window here is written to match the promise the landing page and
- * checkout already make: CTA_NOTE says a full refund if you do not love day
- * one. A policy that contradicts the button is worse than no policy, so if that
- * promise changes, this page changes with it.
+ * The Day One guarantee carried over from the previous offer. The new landing
+ * copy does not advertise it, but changing a refund promise is a business and
+ * legal decision, so this page keeps it until the client decides otherwise.
  */
 export default function RefundPolicyPage() {
   return (
@@ -39,7 +38,7 @@ export default function RefundPolicyPage() {
         </li>
         <li>
           Use the subject line{' '}
-          <strong>&ldquo;Refund Request · 5-Day Challenge&rdquo;</strong>.
+          <strong>&ldquo;Refund Request · 2-Day Workshop&rdquo;</strong>.
         </li>
         <li>
           Include your full name and the date of purchase. A line on what did not
@@ -50,8 +49,8 @@ export default function RefundPolicyPage() {
       <h2>3. When to request it</h2>
       <p>
         Requests must reach us <strong>before Day Two begins</strong>. The
-        guarantee exists so you can judge the programme by experiencing it, not
-        so the whole programme can be taken and then returned.
+        guarantee exists so you can judge the workshop by experiencing it, not
+        so the whole workshop can be taken and then returned.
       </p>
 
       <h2>4. Processing time</h2>
@@ -70,11 +69,7 @@ export default function RefundPolicyPage() {
 
       <h2>6. What is not refundable</h2>
       <ul>
-        <li>Requests made after Day Two of your batch has begun.</li>
-        <li>
-          Requests made after all five live sessions of your batch have been
-          attended.
-        </li>
+        <li>Requests made after Day Two of the workshop has begun.</li>
         <li>Access given free, as part of a giveaway, or at a promotional rate of zero.</li>
       </ul>
 

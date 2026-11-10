@@ -46,9 +46,9 @@ export default function SiteFooter({ children }: { children?: React.ReactNode })
           style={{ color: 'rgba(255,249,241,0.65)' }}
         >
           All content, live sessions and resources provided as part of the
-          S.T.A.R.T. Right Challenge are for educational and general wellness
+          {' '}{LEGAL.product} are for educational and general wellness
           purposes only. They are not medical, psychological or therapeutic
-          advice and do not guarantee specific results. The challenge is not
+          advice and do not guarantee specific results. The workshop is not
           intended to diagnose, treat, cure or prevent any medical or mental
           health condition, or replace care from a qualified healthcare
           professional. Please consult an appropriate healthcare professional

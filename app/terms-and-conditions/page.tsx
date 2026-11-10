@@ -4,7 +4,7 @@ import Link from 'next/link';
 import LegalPageLayout from '@/components/LegalPageLayout';
 
 import { LEGAL } from '../_landing/legal';
-import { PRICE, SESSION_TIMES_TZ, START_DATE } from '../_landing/offer';
+import { EVENT_SCHEDULE, PRICE } from '../_landing/offer';
 
 export const metadata: Metadata = {
   title: `Terms and Conditions | ${LEGAL.brand}`,
@@ -21,23 +21,22 @@ export default function TermsPage() {
     >
       <h2>1. Who we are</h2>
       <p>
-        The programme is provided by {LEGAL.entity}, trading as{' '}
+        The workshop is provided by {LEGAL.entity}, trading as{' '}
         {LEGAL.tradeName}, {LEGAL.address}.
       </p>
 
       <h2>2. What you are buying</h2>
       <p>
-        Access to the {LEGAL.product}: five live coach-led sessions of 60 minutes
-        each, delivered on Zoom, starting {START_DATE} at {SESSION_TIMES_TZ},
-        together with the community access and the digital resources listed at
-        checkout. The fee is {PRICE}.
+        Access to the {LEGAL.product}: live coach-led online sessions on{' '}
+        {EVENT_SCHEDULE}, conducted in Hindi and English, together with the
+        digital bonuses listed at checkout. The fee is {PRICE}.
       </p>
 
       <h2>3. Sessions and scheduling</h2>
       <ul>
         <li>
           Sessions run live at the advertised times. Where a recording is made
-          available, it is a courtesy and not a guaranteed part of the programme.
+          available, it is a courtesy and not a guaranteed part of the workshop.
         </li>
         <li>
           We may move a session for reasons outside our control. Registered
@@ -48,8 +47,9 @@ export default function TermsPage() {
 
       <h2>4. Health disclaimer</h2>
       <p>
-        This programme provides general wellness education covering stillness,
-        yoga and light movement, affirmations, breathwork and group practice.{' '}
+        This workshop provides general wellness education covering sleep habits,
+        breathing techniques, gentle stretches, mindfulness and bedtime and
+        morning routines.{' '}
         <strong>
           It is not medical, psychological or therapeutic advice
         </strong>
@@ -63,6 +63,13 @@ export default function TermsPage() {
         with a heart, joint, blood pressure or mental health condition. Stop
         immediately and seek medical help if you feel pain, dizziness or
         breathlessness. You take part at your own risk.
+      </p>
+      <p>
+        If you take sleeping pills or any other prescribed medication, continue
+        taking it as directed by your doctor.{' '}
+        <strong>
+          Never reduce or stop sleeping medication without medical guidance.
+        </strong>
       </p>
 
       <h2>5. Your access</h2>
@@ -102,7 +109,7 @@ export default function TermsPage() {
       <h2>9. Liability</h2>
       <p>
         To the extent permitted by law, our total liability in connection with
-        the programme is limited to the amount you paid for it. Nothing in these
+        the workshop is limited to the amount you paid for it. Nothing in these
         terms limits liability that cannot lawfully be limited.
       </p>
 

@@ -17,7 +17,6 @@
  *   what they carry. The plum family WAS called navy and was renamed, because
  *   that one no longer did.
  */
-import { ImageSquare } from '@phosphor-icons/react/dist/ssr';
 import { ArrowRight } from '@phosphor-icons/react/dist/ssr';
 import Link from 'next/link';
 
@@ -188,11 +187,13 @@ export function SectionHeading({
 export function PrimaryCTA({
   href = CHECKOUT_HREF,
   label,
+  sub,
   breathe = false,
   full = false,
 }: {
   href?: string;
   label: string;
+  sub?: string;
   breathe?: boolean;
   full?: boolean;
 }) {
@@ -219,70 +220,16 @@ export function PrimaryCTA({
         ['--shimmer' as string]: 'rgba(255,255,255,0.45)',
       }}
     >
-      <span className="inline-flex items-center gap-2.5">
-        {label}
-        <ArrowRight
-          weight="bold"
-          className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5"
-        />
+      <span className="flex flex-col items-center text-center leading-tight">
+        <span className="inline-flex items-center gap-2.5">
+          {label}
+          <ArrowRight
+            weight="bold"
+            className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5"
+          />
+        </span>
+        {sub && <span className="mt-1 text-[13px] font-semibold">{sub}</span>}
       </span>
     </Link>
-  );
-}
-
-/**
- * The reassurance line, welded tight under the button, never separated from
- * it, because the rush and the reassurance are one beat.
- */
-export function CtaNote({ text, onDark = false }: { text: string; onDark?: boolean }) {
-  return (
-    <p
-      className="mt-3.5 text-center text-[13.5px] font-medium"
-      style={{ color: onDark ? C.onDarkMute : C.inkSoft }}
-    >
-      {text}
-    </p>
-  );
-}
-
-/* ══════════════════════════════════════════════════════════════════════════
- *  MediaPlaceholder: a reserved slot for art that has not arrived yet.
- *
- *  Deliberately a designed object rather than a grey box: it holds the exact
- *  aspect ratio the real image will take, so nothing reflows when art lands,
- *  and it reads as "reserved" rather than as a failed image. Swap it for an
- *  <img> at the same ratio and no surrounding layout changes.
- *
- *  `label` says what belongs there, so whoever supplies the art knows what is
- *  being asked for without opening the file.
- * ═══════════════════════════════════════════════════════════════════════ */
-export function MediaPlaceholder({
-  ratio = '16 / 10',
-  label,
-  className = '',
-}: {
-  ratio?: string;
-  label: string;
-  className?: string;
-}) {
-  return (
-    <div
-      className={`flex flex-col items-center justify-center gap-2 overflow-hidden rounded-2xl ${className}`}
-      style={{
-        aspectRatio: ratio,
-        background: `repeating-linear-gradient(135deg, ${C.goldPale} 0px, ${C.goldPale} 10px, ${C.canvas} 10px, ${C.canvas} 20px)`,
-        border: `1px dashed ${C.lineStrong}`,
-      }}
-      role="img"
-      aria-label={`${label}, image to be supplied`}
-    >
-      <ImageSquare weight="duotone" className="h-6 w-6" style={{ color: C.goldInk }} />
-      <span
-        className="px-3 text-center text-[10px] font-bold uppercase tracking-[0.14em]"
-        style={{ color: C.goldInk }}
-      >
-        {label}
-      </span>
-    </div>
   );
 }

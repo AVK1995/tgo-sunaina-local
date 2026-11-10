@@ -4,7 +4,7 @@ import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
 import Analytics from '@/components/Analytics';
 import MetaPixel from '@/components/MetaPixel';
 import LegoObserver from './_landing/lego';
-import { PRICE, SESSION_TIMES, START_DATE } from './_landing/offer';
+import { PRICE, WORKSHOP_DATES } from './_landing/offer';
 import './globals.css';
 
 /**
@@ -51,9 +51,9 @@ const inter = Inter({
   display: 'swap',
 });
 
-const TITLE = "5-Day 'Start Your Morning Right' Challenge | S.T.A.R.T. Right";
+const TITLE = "2-Day 'Sleep Like You're 2 Again' Workshop | S.T.A.R.T. Right";
 
-const DESCRIPTION = `Five live, expert-guided mornings combining stillness, movement, affirmations, breathwork and connection, with Sunaina Setia. Starts ${START_DATE}, ${SESSION_TIMES}, live on Zoom, for ${PRICE}.`;
+const DESCRIPTION = `Learn how to fall asleep faster, sleep deeper and wake up feeling refreshed every morning, with Sunaina Setia. A live online workshop in Hindi and English on ${WORKSHOP_DATES}, for ${PRICE}.`;
 
 /* The live origin. Without a metadataBase Next resolves every share URL and
    every relative OG asset against localhost, so a link pasted into WhatsApp

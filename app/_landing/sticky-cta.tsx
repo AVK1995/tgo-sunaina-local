@@ -9,18 +9,18 @@
  * reader can already see is two primaries, which is none.
  *
  * Layout:
- *   mobile   guarantee • start date
+ *   mobile   live workshop • dates
  *                 [ CTA button ]
- *   desktop  guarantee • start date ............... [ CTA button ]
+ *   desktop  live workshop • dates ................ [ CTA button ]
  *
  * Because it hides at the final CTA it is never on screen at the foot of the
  * page, so it carries NO flow spacer.
  */
-import { ArrowRight, ShieldCheck } from '@phosphor-icons/react/dist/ssr';
+import { ArrowRight, CalendarBlank } from '@phosphor-icons/react/dist/ssr';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-import { CHECKOUT_HREF, CTA_LABEL_INSTANT, STICKY_NOTE } from './offer';
+import { CHECKOUT_HREF, CTA_LABEL, CTA_SUBLABEL, STICKY_NOTE } from './offer';
 import { C } from './shared';
 
 export default function StickyCta() {
@@ -67,7 +67,7 @@ export default function StickyCta() {
           className="flex items-center justify-center gap-1.5 text-[12px] font-medium sm:justify-start sm:text-[13.5px]"
           style={{ color: C.inkSoft }}
         >
-          <ShieldCheck weight="fill" className="h-4 w-4 shrink-0" style={{ color: C.coral }} />
+          <CalendarBlank weight="fill" className="h-4 w-4 shrink-0" style={{ color: C.coral }} />
           {STICKY_NOTE}
         </p>
 
@@ -83,12 +83,15 @@ export default function StickyCta() {
             ['--shimmer' as string]: 'rgba(255,255,255,0.45)',
           }}
         >
-          <span className="inline-flex items-center gap-2">
-            {CTA_LABEL_INSTANT}
-            <ArrowRight
-              weight="bold"
-              className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
-            />
+          <span className="flex flex-col items-center text-center leading-tight">
+            <span className="inline-flex items-center gap-2">
+              {CTA_LABEL}
+              <ArrowRight
+                weight="bold"
+                className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
+              />
+            </span>
+            <span className="mt-0.5 text-[12.5px] font-semibold">{CTA_SUBLABEL}</span>
           </span>
         </Link>
       </div>

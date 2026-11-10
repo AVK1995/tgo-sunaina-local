@@ -1,23 +1,21 @@
 /**
- * The line items, and the one place they are defined.
- *
- * Titles and values are the source copy's recap table, verbatim. Values are
- * numeric so the summary can sum them and show a real total rather than a
- * hard-coded "worth ₹5,485" string: a typed total can disagree with its own
- * line items, a computed one cannot.
- *
- * These mirror the toolkit section on the landing page exactly. If one changes,
- * both must, or the checkout promises something the page did not.
+ * What the buyer gets, and the one place it is defined. The landing page's
+ * bonus section and the checkout summary both read from here, so the checkout
+ * can never promise something the page did not.
  */
-export const RECAP: { title: string; value: number }[] = [
-  { title: '5-Day Live ‘Start Your Morning Right’ Challenge', value: 2500 },
-  { title: 'The ‘Say It To Yourself’ Affirmation Guide', value: 497 },
-  { title: 'The S.T.A.R.T. Right Scorecard', value: 497 },
-  { title: 'The Wind Down Breathwork Track', value: 497 },
-  { title: 'The S.T.A.R.T. Right Inner Circle', value: 997 },
-  { title: 'The ‘One Good Story’ Collection', value: 497 },
+export const LEAD_ITEM = '2-Day Live ‘Sleep Like You’re 2 Again’ Workshop';
+
+export const BONUSES: { title: string; body: string }[] = [
+  {
+    title: 'The Deep Sleep Guided Meditation',
+    body: 'Quiet your racing mind & prepare for peaceful sleep in just 15 minutes, with a calming guided audio you can use every night.',
+  },
+  {
+    title: 'The 7-Day Better Sleep Reset Planner',
+    body: "Take control of your sleep in just 7 days, with a step-by-step planner to build better habits, track your progress & identify what's keeping you awake.",
+  },
+  {
+    title: 'The 10-Minute Morning Recharge Routine',
+    body: 'Kickstart your mornings with more energy, focus & mental clarity, with a simple 10-minute routine you can follow from the comfort of your home.',
+  },
 ];
-
-export const VALUE_TOTAL = RECAP.reduce((n, r) => n + r.value, 0);
-
-export const inr = (n: number) => `₹${n.toLocaleString('en-IN')}`;
