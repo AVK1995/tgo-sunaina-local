@@ -5,6 +5,7 @@ import { NextResponse } from 'next/server';
 import { CHECKOUT_CONFIG, capiReady, isTestMode } from '@/lib/checkout-config';
 import { ga4ServerReady, sendGa4Purchase } from '@/lib/ga4-server';
 import { sendCapiEvent, type Occupation } from '@/lib/meta-capi';
+import { orderLinks, parseOrderType, priceOrder } from '@/lib/order';
 import { unpackContext } from '@/lib/order-notes';
 import { pabblyReady, sendPabblyPurchase } from '@/lib/pabbly';
 
@@ -73,6 +74,20 @@ export async function POST(req: Request) {
   const ctx = unpackContext(notes);
 
   const country = ctx.country || 'in';
+
+  /* What was bought, as recorded when the order was created. The amounts come
+     from the order itself rather than today's prices, so the confirmation
+     always matches what this buyer was charged. */
+  const orderType = parseOrderType(ctx.orderType);
+  const fallbackPrices = priceOrder(orderType);
+  const amountOr = (stored: string, fallback: number) => {
+    const n = Number(stored);
+    return stored !== '' && Number.isFinite(n) ? n : fallback;
+  };
+  const baseAmount = amountOr(ctx.baseAmount, fallbackPrices.baseAmount);
+  const recordingAmount = amountOr(ctx.recordingAmount, fallbackPrices.recordingAmount);
+  const callAmount = amountOr(ctx.callAmount, fallbackPrices.callAmount);
+  const links = orderLinks(orderType);
 
   /* Validated against the two known answers rather than passed through: this
      value reaches Meta's custom_data, which is unhashed and is read when a
@@ -144,6 +159,14 @@ export async function POST(req: Request) {
         currency: CHECKOUT_CONFIG.currency,
         product: CHECKOUT_CONFIG.contentName,
         occupation: ctx.occupation,
+        orderType,
+        baseAmount,
+        recordingAmount,
+        callAmount,
+        totalAmount: valueRupees,
+        workshopWhatsapp: links.workshopWhatsapp,
+        recordingsWhatsapp: links.recordingsWhatsapp,
+        callBooking: links.callBooking,
       })
     : { ok: false, status: 0 };
 

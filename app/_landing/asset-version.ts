@@ -22,8 +22,15 @@
  *     from it and the favicons are all new paths, but the bump is owed anyway:
  *     the two coach photographs were renamed IN PLACE, so /coach/detail-close
  *     now serves different bytes than the name has already served.
+ * v4: the eight benefit photos (/public/workshop/benefits) were cropped IN
+ *     PLACE to 1200x720 to drop the label pills baked into their bottom edge
+ *     (21 Nov 2026). The badges are now real text laid over the photo.
+ * v5: four benefit photos (rest, unwind-fall-asleep, unwind-natural-habits,
+ *     unwind-focus) replaced IN PLACE with new artwork (21 Nov 2026).
+ * v6: the other four (balance, heart, recover, energize) replaced IN PLACE
+ *     with the icon versions of their artwork (21 Nov 2026).
  */
-export const ASSET_V = '3';
+export const ASSET_V = '6';
 
 /** Appends the version to a /public path. Pass through unchanged if there is
  *  nothing to version, so a null slot stays a placeholder. */

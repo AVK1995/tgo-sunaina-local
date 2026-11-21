@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import { NextResponse } from 'next/server';
 
 import { CHECKOUT_CONFIG, isTestMode } from '@/lib/checkout-config';
+import { orderTypeFor, priceOrder } from '@/lib/order';
 import { packContext } from '@/lib/order-notes';
 import { readClientIp, readClientUserAgent } from '@/lib/request-signals';
 
@@ -66,6 +67,11 @@ export async function POST(req: Request) {
 
   const utm = (body.utm ?? {}) as Record<string, string | undefined>;
 
+  /* The browser says WHICH add-ons were ticked, never what they cost. The
+     amount is priced here from the server's own env values, so a tampered
+     request can change what is bought but not what it is charged. */
+  const priced = priceOrder(orderTypeFor(body.recordings === true, body.call === true));
+
   /* Identity and timestamp for the fulfilment record. Generated HERE, not in
      the webhook: `created_at` must mean "when this person submitted their
      details", and a webhook stamp would instead record when Razorpay got round
@@ -108,6 +114,10 @@ export async function POST(req: Request) {
       fbclid: truncate(body.fbclid, 200),
       referrer: truncate(body.referrer, 200),
       landingUrl: truncate(body.landingUrl, 300),
+      orderType: priced.type,
+      baseAmount: String(priced.baseAmount),
+      recordingAmount: String(priced.recordingAmount),
+      callAmount: String(priced.callAmount),
     }),
   };
 
@@ -126,7 +136,7 @@ export async function POST(req: Request) {
         authorization: `Basic ${Buffer.from(`${keyId}:${keySecret}`).toString('base64')}`,
       },
       body: JSON.stringify({
-        amount: CHECKOUT_CONFIG.amountPaise,
+        amount: priced.totalAmount * 100,
         currency: CHECKOUT_CONFIG.currency,
         receipt: `sr_${Date.now()}`,
         notes,
@@ -166,6 +176,7 @@ export async function POST(req: Request) {
       leadId,
       isTest: isTestMode(),
       orderId: order.id,
+      orderType: priced.type,
       amount: order.amount,
       currency: order.currency,
       keyId, // publishable by design: the browser needs it to open the sheet

@@ -29,8 +29,10 @@ type Testimonial = { label: string; vimeoId?: string; meta?: string };
 /* Names exactly as Atul supplied them, in the order he supplied them. `label`
    carries the accessible name of the player; `meta` is the caption under the
    card. They are the same string because a name is all we have been given, and
-   a city or a result would have to be invented to fill the line. */
+   a city or a result would have to be invented to fill the line. Tarun leads,
+   at the client's request; the rest keep the supplied order. */
 const TESTIMONIALS: Testimonial[] = [
+  { label: 'Tarun', meta: 'Tarun', vimeoId: '1223574207' },
   { label: 'Pooja', meta: 'Pooja', vimeoId: '1223573097' },
   { label: 'Munni', meta: 'Munni', vimeoId: '1223573921' },
   { label: 'Rakesh', meta: 'Rakesh', vimeoId: '1223573918' },
@@ -38,7 +40,6 @@ const TESTIMONIALS: Testimonial[] = [
   { label: 'Kanchan', meta: 'Kanchan', vimeoId: '1223573920' },
   { label: 'Neelam', meta: 'Neelam', vimeoId: '1223574061' },
   { label: 'Pinky', meta: 'Pinky', vimeoId: '1223574098' },
-  { label: 'Tarun', meta: 'Tarun', vimeoId: '1223574207' },
   { label: 'Renu', meta: 'Renu', vimeoId: '1223574333' },
 ];
 
@@ -72,7 +73,7 @@ export default function Proof() {
   return (
     <section className="px-4 py-12 sm:py-20 lg:py-24" style={{ background: C.canvas }}>
       <SectionHeading>
-        From <span style={{ color: C.goldDeep }}>Better Sleep To Better Health</span>,
+        From <span className="kz-mark" data-lego-mark="">Better Sleep To Better Health</span>,
         See The Changes People Have Experienced In Their Lives.
       </SectionHeading>
 
@@ -93,7 +94,7 @@ export default function Proof() {
               ...legoBrick(idx, 110),
               background: C.canvas,
               border: `1px solid ${C.line}`,
-              boxShadow: '0 18px 40px -28px rgba(88,51,79,0.3)',
+              boxShadow: '0 18px 40px -28px rgba(38, 48, 74,0.3)',
             }}
           >
             <div

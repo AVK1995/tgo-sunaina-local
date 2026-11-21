@@ -72,6 +72,15 @@ export type PabblyPurchase = {
   currency: string;
   product: string;
   occupation: string;
+  /* What was bought, for routing the right confirmation email and WhatsApp. */
+  orderType: string;
+  baseAmount: number;
+  recordingAmount: number;
+  callAmount: number;
+  totalAmount: number;
+  workshopWhatsapp: string;
+  recordingsWhatsapp: string;
+  callBooking: string;
 };
 
 /* Every key is emitted on every call, empty string where unknown. Pabbly
@@ -135,6 +144,25 @@ export async function sendPabblyPurchase(
     event_schedule: EVENT_SCHEDULE,
     first_event_date: s(EVENTS[0]?.date),
     first_event_time: s(EVENTS[0]?.time),
+
+    /* The purchase itself. Pabbly routes on order_type (workshop,
+       workshop_recordings, workshop_call, workshop_recordings_call) to pick
+       the confirmation. Amounts are plain rupee numbers; an add-on that was
+       not bought is 0 and its link is an empty string, never missing. */
+    order_type: s(p.orderType),
+    has_recordings: p.recordingAmount > 0,
+    has_private_call: p.callAmount > 0,
+    base_amount: p.baseAmount,
+    recording_amount: p.recordingAmount,
+    call_amount: p.callAmount,
+    total_amount: p.totalAmount,
+    day1_date: s(EVENTS[0]?.date),
+    day1_time: s(EVENTS[0]?.time),
+    day2_date: s(EVENTS[1]?.date),
+    day2_time: s(EVENTS[1]?.time),
+    workshop_whatsapp_link: s(p.workshopWhatsapp),
+    recordings_whatsapp_link: s(p.recordingsWhatsapp),
+    call_booking_link: s(p.callBooking),
   });
 
   const ATTEMPTS = 3;

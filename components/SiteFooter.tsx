@@ -26,7 +26,7 @@ import { C } from '@/app/_landing/shared';
  */
 export default function SiteFooter({ children }: { children?: React.ReactNode }) {
   return (
-    <footer className="px-4 py-10 sm:px-6 sm:py-12" style={{ background: C.plumDeep }}>
+    <footer className="px-4 py-10 sm:px-6 sm:py-12" style={{ background: C.plumDeeper }}>
       <div className="mx-auto max-w-[1180px] text-center">
         <span className="mb-6 inline-flex">
           <BrandMark height={66} onDark />
@@ -43,7 +43,7 @@ export default function SiteFooter({ children }: { children?: React.ReactNode })
 
         <p
           className="mx-auto mt-5 max-w-4xl text-[12.5px] leading-relaxed sm:text-[13.5px]"
-          style={{ color: 'rgba(255,249,241,0.65)' }}
+          style={{ color: 'rgba(255, 255, 255,0.65)' }}
         >
           All content, live sessions and resources provided as part of the
           {' '}{LEGAL.product} are for educational and general wellness
@@ -68,7 +68,7 @@ export default function SiteFooter({ children }: { children?: React.ReactNode })
             rather than writing to ask. */}
         <p
           className="mx-auto mt-6 max-w-3xl text-[12px] leading-relaxed sm:text-[12.5px]"
-          style={{ color: 'rgba(255,249,241,0.55)' }}
+          style={{ color: 'rgba(255, 255, 255,0.55)' }}
         >
           {LEGAL.entity}, trading as {LEGAL.tradeName}
           <br />
@@ -85,7 +85,7 @@ export default function SiteFooter({ children }: { children?: React.ReactNode })
 
         <p
           className="mt-4 text-[12px] sm:text-[13px]"
-          style={{ color: 'rgba(255,249,241,0.55)' }}
+          style={{ color: 'rgba(255, 255, 255,0.55)' }}
         >
           © {new Date().getFullYear()} {LEGAL.brand}. All rights reserved.
         </p>
@@ -93,18 +93,18 @@ export default function SiteFooter({ children }: { children?: React.ReactNode })
         <nav
           aria-label="Legal"
           className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[12px]"
-          style={{ color: 'rgba(255,249,241,0.7)' }}
+          style={{ color: 'rgba(255, 255, 255,0.7)' }}
         >
           <Link href="/privacy-policy" className="hover:underline">
             Privacy Policy
           </Link>
-          <span aria-hidden style={{ color: 'rgba(255,249,241,0.35)' }}>
+          <span aria-hidden style={{ color: 'rgba(255, 255, 255,0.35)' }}>
             ·
           </span>
           <Link href="/terms-and-conditions" className="hover:underline">
             Terms and Conditions
           </Link>
-          <span aria-hidden style={{ color: 'rgba(255,249,241,0.35)' }}>
+          <span aria-hidden style={{ color: 'rgba(255, 255, 255,0.35)' }}>
             ·
           </span>
           <Link href="/refund-policy" className="hover:underline">

@@ -3,26 +3,26 @@
 @tailwind utilities;
 
 /* ══════════════════════════════════════════════════════════════════════════
- *  S.T.A.R.T. RIGHT · tokens (the locked challenge skin, unchanged)
+ *  S.T.A.R.T. RIGHT · tokens (the night-navy and butter-yellow skin)
  *  Mirrors app/_landing/shared.tsx (the TS half). Anything a pseudo-element
  *  needs has to live here, because inline styles cannot reach ::before.
  * ═══════════════════════════════════════════════════════════════════════ */
 :root {
-  /* SUNRISE. Mirrors app/_landing/shared.tsx: two copies of one palette, and
+  /* NIGHT SKY. Mirrors app/_landing/shared.tsx: two copies of one palette, and
      they move together. Anything a pseudo-element needs has to live here,
      because inline styles cannot reach ::before. */
-  --canvas: #fff9f1;
-  --canvas-2: #fbede5;
+  --canvas: #fffefb;
+  --canvas-2: #f3f5fa;
 
-  /* Plum heads, espresso reads, taupe supports. */
-  --ink: #58334f;
-  --ink-body: #302724;
-  --ink-soft: #746763;
+  /* Navy heads, slate reads, grey supports. */
+  --ink: #26304a;
+  --ink-body: #2e3443;
+  --ink-soft: #5e6577;
 
-  --plum-deep: #58334f;
-  --plum-deeper: #40243a;
-  --plum-bed: #f3e8ef;
-  --on-dark: #fff9f1;
+  --plum-deep: #26304a;
+  --plum-deeper: #1d2539;
+  --plum-bed: #e8ecf4;
+  --on-dark: #ffffff;
 
   --gold: #f2b45f;
   --gold-pale: #f5f0e8;
@@ -31,14 +31,14 @@
   --gold-deep: #a96f17;
   --gold-ink: #8f5b0d;
 
-  --coral: #e96f55;
-  --coral-bed: #fdebe5;
-  --coral-ink: #b93b23;
+  --coral: #f0a35e;
+  --coral-bed: #fdf0e4;
+  --coral-ink: #a24e16;
 
-  --rose-bed: #f7e6e1;
+  --rose-bed: #eef2f8;
 
-  --line: #efe3d8;
-  --line-strong: #e0cdbc;
+  --line: #e5e8ef;
+  --line-strong: #d2d8e3;
 }
 
 * {
@@ -237,7 +237,7 @@ button {
   transform: translate3d(0, -6px, 0) scale(1.012);
   box-shadow:
     0 2px 0 0 rgba(224, 164, 79, 0.34),
-    0 20px 38px -20px rgba(88, 51, 79, 0.32);
+    0 20px 38px -20px rgba(38, 48, 74, 0.32);
 }
 .lego-hover:active {
   transform: translate3d(0, -1px, 0) scale(0.994);
@@ -252,7 +252,7 @@ button {
 }
 .lego-hover-sm:hover {
   transform: translate3d(0, -3px, 0);
-  box-shadow: 0 12px 22px -16px rgba(88, 51, 79, 0.3);
+  box-shadow: 0 12px 22px -16px rgba(38, 48, 74, 0.3);
 }
 .lego-hover-sm:active {
   transform: translate3d(0, 0, 0) scale(0.996);
@@ -266,7 +266,7 @@ button {
 }
 .lego-hover-soft:hover {
   transform: translate3d(0, -4px, 0);
-  box-shadow: 0 18px 34px -22px rgba(88, 51, 79, 0.32);
+  box-shadow: 0 18px 34px -22px rgba(38, 48, 74, 0.32);
 }
 
 /* Icon-only: the generous hover target stays, but only the glyph moves. For
@@ -299,7 +299,7 @@ button {
  *  ATTENTION, only ever on something the reader can act on (C7)
  * ═══════════════════════════════════════════════════════════════════════ */
 @keyframes lego-pulse-dot {
-  0% { box-shadow: 0 0 0 0 var(--dot-pulse, rgba(233, 111, 85, 0.55)); }
+  0% { box-shadow: 0 0 0 0 var(--dot-pulse, rgba(240, 163, 94, 0.55)); }
   70% { box-shadow: 0 0 0 6px transparent; }
   100% { box-shadow: 0 0 0 0 transparent; }
 }
@@ -312,12 +312,12 @@ button {
 @keyframes cta-breath {
   0%, 100% {
     box-shadow:
-      0 14px 30px -14px rgba(88, 51, 79, 0.5),
+      0 14px 30px -14px rgba(38, 48, 74, 0.5),
       0 0 0 0 rgba(224, 164, 79, 0);
   }
   50% {
     box-shadow:
-      0 14px 30px -14px rgba(88, 51, 79, 0.5),
+      0 14px 30px -14px rgba(38, 48, 74, 0.5),
       0 0 0 8px rgba(224, 164, 79, 0.18);
   }
 }
@@ -343,7 +343,7 @@ button {
   background: linear-gradient(
     100deg,
     transparent,
-    var(--shimmer, rgba(255, 249, 241, 0.34)),
+    var(--shimmer, rgba(255, 255, 255, 0.34)),
     transparent
   );
   animation: cta-shimmer 5.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
@@ -351,33 +351,15 @@ button {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
- *  THE HERO STAGE: atmosphere, never a flat fill (C5)
- *  A LIGHT stage: two apricot blooms and one coral bloom over an ivory-to-blush
- *  ramp, with a faint dot grid masked to nothing at the edges so it never ends
- *  on a hard line.
+ *  THE HERO STAGE: a flat soft-white ground, per the client brief for a calm,
+ *  static page. No blooms, ramps or dot grid.
  * ═══════════════════════════════════════════════════════════════════════ */
 .kz-stage {
   position: relative;
   isolation: isolate;
-  background:
-    radial-gradient(ellipse 62% 52% at 18% 6%, rgba(242, 180, 95, 0.18), transparent 62%),
-    radial-gradient(ellipse 54% 46% at 88% 24%, rgba(242, 180, 95, 0.12), transparent 64%),
-    radial-gradient(ellipse 46% 40% at 62% 96%, rgba(233, 111, 85, 0.1), transparent 66%),
-    linear-gradient(178deg, #fff9f1 0%, #fdf3ea 58%, #fbede5 100%);
+  background: var(--canvas);
 }
 .kz-stage > * { position: relative; z-index: 2; }
-.kz-stage::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background-image: radial-gradient(rgba(169, 111, 23, 0.14) 1px, transparent 1px);
-  background-size: 26px 26px;
-  -webkit-mask-image: radial-gradient(ellipse 74% 62% at 50% 42%, #000 0%, transparent 78%);
-  mask-image: radial-gradient(ellipse 74% 62% at 50% 42%, #000 0%, transparent 78%);
-  opacity: 0.5;
-  pointer-events: none;
-}
 /* The seam where the stage hands over to the cream page. */
 .kz-stage-seam {
   height: 1px;
@@ -412,7 +394,7 @@ button {
   inset: 0;
   transform-origin: top center;
   transform: scaleY(var(--tl-p, 0));
-  background: linear-gradient(180deg, #f2b45f 0%, #e0a44f 46%, #58334f 100%);
+  background: linear-gradient(180deg, #f2b45f 0%, #e0a44f 46%, #26304a 100%);
   border-radius: 3px;
   transition: transform 0.12s linear;
 }
@@ -449,13 +431,13 @@ button {
 /* Lit: the glow reads as the rail's light spilling out of the node, not as a
    drop shadow. */
 .tl-node.is-on .tl-node-inner {
-  background: linear-gradient(160deg, #6b4262 0%, #58334f 62%, #40243a 100%);
+  background: linear-gradient(160deg, #323d5c 0%, #26304a 62%, #1d2539 100%);
   border-color: rgba(224, 164, 79, 0.7);
   color: var(--gold);
   box-shadow:
     0 0 0 5px rgba(242, 180, 95, 0.28),
     0 0 18px 2px rgba(224, 164, 79, 0.45),
-    0 8px 18px -8px rgba(88, 51, 79, 0.5);
+    0 8px 18px -8px rgba(38, 48, 74, 0.5);
   animation: lego-snap 0.62s cubic-bezier(0.34, 1.45, 0.64, 1);
 }
 
@@ -501,11 +483,11 @@ button {
     radial-gradient(ellipse 92% 58% at 50% 0%, rgba(242, 180, 95, 0.34), transparent 66%),
     var(--canvas);
   box-shadow:
-    0 0 0 1px rgba(88, 51, 79, 0.1),
+    0 0 0 1px rgba(38, 48, 74, 0.1),
     0 0 0 7px var(--canvas),
     0 0 0 8px rgba(224, 164, 79, 0.6),
     0 0 70px -12px rgba(224, 164, 79, 0.34),
-    0 54px 96px -44px rgba(88, 51, 79, 0.28);
+    0 54px 96px -44px rgba(38, 48, 74, 0.28);
 }
 .kz-recap > * { position: relative; z-index: 2; }
 .kz-recap::before {
@@ -549,14 +531,14 @@ button {
   display: grid;
   place-items: center;
   background:
-    radial-gradient(circle at 30% 28%, rgba(255, 249, 241, 0.7), transparent 56%),
+    radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.7), transparent 56%),
     linear-gradient(180deg, #fcefd6 0%, #f0d49a 55%, #dca85c 100%);
   box-shadow:
     0 0 0 1.5px rgba(169, 111, 23, 0.4),
     0 0 0 5px var(--canvas),
     0 0 0 6.5px rgba(224, 164, 79, 0.7),
     0 14px 30px -8px rgba(169, 111, 23, 0.3),
-    inset 0 1px 0 rgba(255, 249, 241, 0.7);
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 .kz-seal svg { width: 31px; height: 31px; color: #8f5b0d; }
 
@@ -596,21 +578,9 @@ button {
   animation: kz-price-pop 0.6s cubic-bezier(0.34, 1.5, 0.64, 1) 0.75s both;
 }
 
-/* The lit price: gradient-clipped BURNISHED GOLD with an apricot glow behind
-   it, so the number you pay is the same colour family as the button you pay it
-   with. Coral is not used here for the same reason it is not the button.
-
-   The ramp starts at #b87c1e, NOT at the apricot itself. Gradient-clipped text
-   is judged at its lightest stop, and #e0a44f is 2.09:1 on ivory, under even
-   the 3:1 large-text bar these 46 to 56px numbers get. It was failing that bar
-   before this pass. #b87c1e is 3.38:1 on ivory and 3.14:1 on the gold wash,
-   and the brightness the darker ramp gives up is paid back by the glow. */
+/* The lit price: a flat golden ink, readable at any size on the light page. */
 .kz-lit {
-  background: linear-gradient(150deg, #b87c1e 0%, #a96f17 46%, #8f5b0d 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  filter: drop-shadow(0 2px 10px rgba(242, 180, 95, 0.5));
+  color: var(--gold-deep);
 }
 
 /* ── the ruled ledger (recap rows + mechanism rows) ───────────────────────
@@ -784,7 +754,7 @@ body {
   font-size: 20px;
   font-weight: 700;
   line-height: 1.35;
-  color: #58334f;
+  color: #26304a;
 }
 @media (min-width: 640px) {
   .legal-content h2 { font-size: 24px; }
@@ -794,7 +764,7 @@ body {
   font-family: var(--font-display), system-ui, sans-serif;
   font-size: 16px;
   font-weight: 700;
-  color: #58334f;
+  color: #26304a;
 }
 .legal-content p { margin-top: 0.75rem; }
 .legal-content ul {
@@ -810,4 +780,176 @@ body {
   text-decoration: underline;
   text-underline-offset: 2px;
 }
-.legal-content strong { font-weight: 600; color: #58334f; }
+.legal-content strong { font-weight: 600; color: #26304a; }
+
+/* ── the headline highlight ────────────────────────────────────────────────
+   A hand-drawn apricot brush stroke under the key words: a quiet, sleepy
+   swash rather than a marker block. The text keeps its own colour, so it
+   reads at full contrast. box-decoration-break: clone gives every line of a
+   wrapped phrase its own stroke, and the stroke draws itself in (left to
+   right) the first time the heading scrolls into view. */
+.kz-mark {
+  color: inherit;
+  padding-bottom: 0.08em;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 18' preserveAspectRatio='none'%3E%3Cpath d='M4 13 C 60 6, 150 4, 296 9' fill='none' stroke='%23F2B45F' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 0.34em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.bw-js .kz-mark[data-lego-mark] {
+  background-size: 0% 0.34em;
+  transition: background-size 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
+}
+.bw-js .kz-mark[data-lego-mark].lego-in {
+  background-size: 100% 0.34em;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bw-js .kz-mark[data-lego-mark] {
+    background-size: 100% 0.34em;
+    transition: none;
+  }
+}
+
+/* ── the benefit photo cards ──────────────────────────────────────────────
+   Rides on .lego-hover for the lift; this only adds the navy-tinted shadow and
+   a firmer edge, so the photo card reads as raised rather than just moved. */
+.kz-benefit:hover {
+  border-color: var(--line-strong) !important;
+  box-shadow: 0 22px 44px -26px rgba(38, 48, 74, 0.42);
+}
+/* The badge on each photo: frosted, lifted a touch, and on hover its icon
+   chip turns apricot so the card answers the pointer in two places. */
+.kz-benefit-tag {
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 6px 16px -8px rgba(29, 37, 57, 0.55);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.kz-benefit-tag > span { transition: background-color 0.3s ease; }
+.kz-benefit-tag > span svg { transition: color 0.3s ease; }
+.kz-benefit:hover .kz-benefit-tag { transform: translateY(-2px); }
+.kz-benefit:hover .kz-benefit-tag > span { background-color: var(--gold) !important; }
+.kz-benefit:hover .kz-benefit-tag > span svg { color: var(--plum-deep) !important; }
+/* The bonus covers: on hover the book lifts and turns slightly, the way a
+   product shot invites a closer look. */
+.kz-bonus-cover {
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.kz-bonus:hover .kz-bonus-cover { transform: scale(1.04) rotate(-1.5deg); }
+.kz-bonus:hover { box-shadow: 0 22px 44px -26px rgba(38, 48, 74, 0.42); }
+@media (prefers-reduced-motion: reduce) {
+  .kz-bonus-cover { transition: none; }
+  .kz-bonus:hover .kz-bonus-cover { transform: none; }
+  .kz-benefit-tag { transition: none; }
+  .kz-benefit:hover .kz-benefit-tag { transform: none; }
+}
+
+/* ── checkout add-ons (order bumps) ───────────────────────────────────────
+   Unticked: a dashed butter-yellow edge with a slow glow, so the eye finds it.
+   Ticked: a solid navy edge, the glow stops, and the box pops. */
+.kz-bump {
+  position: relative;
+  background: var(--gold-wash);
+  border: 2px dashed var(--gold-mid);
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease;
+  animation: kz-bump-glow 2.6s ease-in-out infinite;
+}
+.kz-bump:hover { transform: translateY(-2px); }
+.kz-bump:focus-within { outline: 2px solid var(--plum-deep); outline-offset: 3px; }
+.kz-bump[data-on='true'] {
+  background: var(--canvas);
+  border-style: solid;
+  border-color: var(--gold);
+  box-shadow: 0 18px 36px -24px rgba(38, 48, 74, 0.55);
+  animation: none;
+}
+@keyframes kz-bump-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(224, 164, 79, 0); }
+  50% { box-shadow: 0 0 0 6px rgba(224, 164, 79, 0.28); }
+}
+.kz-bump[data-on='true'] .kz-bump-box { animation: kz-check-pop 0.35s cubic-bezier(0.34, 1.6, 0.64, 1); }
+@keyframes kz-check-pop {
+  0% { transform: scale(0.7); }
+  100% { transform: scale(1); }
+}
+/* The pointing hand nudges toward the price line. */
+.kz-nudge { animation: kz-nudge 1.1s ease-in-out infinite; }
+@keyframes kz-nudge {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 5px 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kz-bump,
+  .kz-nudge,
+  .kz-bump[data-on='true'] .kz-bump-box { animation: none !important; }
+  .kz-bump:hover { transform: none; }
+}
+
+/* ── the navy sections ────────────────────────────────────────────────────
+   A highlighted word on navy drops the marker band and turns apricot instead:
+   a band under white or navy text would cost the word its contrast. Cards
+   inside these sections keep their own light grounds and inks. */
+.kz-dark .kz-mark {
+  color: var(--gold);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 18' preserveAspectRatio='none'%3E%3Cpath d='M4 13 C 60 6, 150 4, 296 9' fill='none' stroke='%23F2B45F' stroke-opacity='0.45' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+/* ── the add-on price tag ─────────────────────────────────────────────────
+   Apricot pill that breathes until the add-on is ticked, then pops navy. */
+.kz-price-tag {
+  background: var(--gold-wash);
+  border: 1px solid var(--gold-mid);
+  color: var(--gold-deep);
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  animation: kz-tag-breathe 2.4s ease-in-out infinite;
+}
+@keyframes kz-tag-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+.kz-bump[data-on='true'] .kz-price-tag {
+  background: var(--plum-deep);
+  border-color: var(--plum-deep);
+  color: var(--gold);
+  animation: kz-check-pop 0.35s cubic-bezier(0.34, 1.6, 0.64, 1);
+}
+
+/* ── the mobile sticky add-on rows ────────────────────────────────────── */
+.kz-mini-bump {
+  background: var(--gold-wash);
+  border: 1.5px dashed var(--gold-mid);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.kz-mini-bump[data-on='true'] {
+  background: var(--canvas);
+  border-style: solid;
+  border-color: var(--gold);
+}
+.kz-mini-bump[data-on='true'] .kz-bump-box {
+  animation: kz-check-pop 0.35s cubic-bezier(0.34, 1.6, 0.64, 1);
+}
+.kz-mini-bump:focus-within { outline: 2px solid var(--plum-deep); outline-offset: 2px; }
+
+/* ── themed dropdowns ─────────────────────────────────────────────────── */
+.kz-select:focus-visible,
+.kz-select[data-open='true'] {
+  border-color: var(--gold-deep) !important;
+  box-shadow: 0 0 0 3px rgba(242, 180, 95, 0.35);
+}
+.kz-select-list { animation: kz-list-in 0.16s ease-out; }
+@keyframes kz-list-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kz-price-tag,
+  .kz-bump[data-on='true'] .kz-price-tag,
+  .kz-mini-bump[data-on='true'] .kz-bump-box,
+  .kz-select-list { animation: none !important; }
+}

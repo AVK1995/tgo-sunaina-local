@@ -83,8 +83,9 @@ export function trackBeginCheckout() {
   ga4BeginCheckout(money);
 }
 
-/** Details valid and the payment sheet is opening. This is the real intent. */
-export function trackInitiateCheckout(person: Person) {
+/** Details valid and the payment sheet is opening. This is the real intent.
+ *  `value` is the order total including any add-ons. */
+export function trackInitiateCheckout(person: Person, value: number = VALUE) {
   capi('InitiateCheckout', person);
 
   /* QualifiedLead, for working professionals only, at the same instant.
@@ -101,19 +102,19 @@ export function trackInitiateCheckout(person: Person) {
     capi('QualifiedLead', person);
   }
 
-  ga4AddPaymentInfo({ value: VALUE, currency: 'INR' });
+  ga4AddPaymentInfo({ value, currency: 'INR' });
 }
 
 /**
  * GA4 only. Meta's Purchase comes from the Razorpay webhook, where the payment
  * is proven. Firing it here as well would double-count every sale.
  */
-export function trackPurchase(transactionId: string) {
+export function trackPurchase(transactionId: string, value: number = VALUE) {
   /* Keyed on the payment id, not a fixed string: a refresh, a back-forward, or
      the buyer reopening the confirmation link must not count the sale twice,
      but a genuine second purchase later must still count. Without this GA4
      revenue inflates every time someone reloads the page. */
   once(`purchase_${transactionId}`, () => {
-    ga4Purchase({ transactionId, ...money });
+    ga4Purchase({ transactionId, ...money, value });
   });
 }

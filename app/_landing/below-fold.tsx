@@ -18,15 +18,15 @@ import type { Icon } from '@phosphor-icons/react';
 import {
   Armchair,
   Bed,
-  BatteryCharging,
   Brain,
   Briefcase,
   ChartLineUp,
-  Heartbeat,
   HandHeart,
+  Heartbeat,
   House,
+  Leaf,
+  Lightning,
   MoonStars,
-  Pill,
   Scales,
   ShieldPlus,
   Smiley,
@@ -64,7 +64,7 @@ function WhoCanBenefit() {
   return (
     <section className="px-4 py-12 sm:py-20" style={{ background: C.canvas }}>
       <SectionHeading sub="If You Belong To Any Of These Groups, You're In The Right Place.">
-        Who Can <span style={{ color: C.goldDeep }}>Benefit</span> From This Workshop?
+        Who Can <span className="kz-mark" data-lego-mark="">Benefit</span> From This Workshop?
       </SectionHeading>
 
       <ul className="mx-auto mt-10 grid max-w-[980px] grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -101,45 +101,79 @@ function WhoCanBenefit() {
   );
 }
 
-/* ══ Bring back your energy ════════════════════════════════════════════════ */
-const BENEFITS: { icon: Icon; title: string; body: string }[] = [
+/* ══ Bring back your energy ════════════════════════════════════════════════
+   Each card leads with its photograph (1200x720) and a small badge laid
+   over its bottom-right corner (clear of the icons in the artwork). The badge is real text and a line icon, not
+   part of the picture, and every card's word is different. */
+const BENEFITS: {
+  image: string;
+  alt: string;
+  title: string;
+  body: string;
+  tag: string;
+  TagIcon: Icon;
+}[] = [
   {
-    icon: Bed,
+    image: '/workshop/benefits/rest.jpg',
+    tag: 'Rest',
+    TagIcon: Bed,
+    alt: 'A woman stretching happily in bed, waking up fully recharged',
     title: 'Get 7–9 Hours Of Restful Sleep',
     body: 'And Wake Up Feeling Properly Recharged Every Morning.',
   },
   {
-    icon: MoonStars,
+    image: '/workshop/benefits/unwind-fall-asleep.jpg',
+    tag: 'Drift Off',
+    TagIcon: MoonStars,
+    alt: 'A man relaxing in bed, showing a full night of sleep on his phone',
     title: 'Fall Asleep Faster & Stay Asleep Longer',
     body: 'Without Spending Half The Night Tossing And Turning.',
   },
   {
-    icon: Pill,
+    image: '/workshop/benefits/unwind-natural-habits.jpg',
+    tag: 'Natural',
+    TagIcon: Leaf,
+    alt: 'A woman pushing away sleeping pills and holding a cup of chamomile tea',
     title: 'Reduce Reliance On Sleeping Pills',
     body: 'And Build Natural Sleep Habits',
   },
   {
-    icon: Brain,
+    image: '/workshop/benefits/unwind-focus.jpg',
+    tag: 'Focus',
+    TagIcon: Brain,
+    alt: 'A woman working focused at her laptop, taking notes',
     title: 'Improve Your Memory, Focus & Mental Sharpness',
     body: 'And think clearly & perform better throughout the day.',
   },
   {
-    icon: Scales,
+    image: '/workshop/benefits/balance.jpg',
+    tag: 'Balance',
+    TagIcon: Scales,
+    alt: 'A balanced breakfast of poha, fruit, curd and almonds',
     title: 'Support A Healthier Metabolism & Weight Management',
     body: 'By helping regulate hunger hormones and energy balance.',
   },
   {
-    icon: Heartbeat,
+    image: '/workshop/benefits/heart.jpg',
+    tag: 'Heart',
+    TagIcon: Heartbeat,
+    alt: 'A man breathing deeply on a sunny balcony, hand on his heart',
     title: 'Support Heart Health & Healthy Blood Pressure',
     body: 'By giving your cardiovascular system the rest it needs.',
   },
   {
-    icon: ShieldPlus,
+    image: '/workshop/benefits/recover.jpg',
+    tag: 'Recover',
+    TagIcon: ShieldPlus,
+    alt: 'A woman resting on a sofa under a blanket with a warm drink',
     title: "Strengthen Your Body's Immunity & Recovery",
     body: 'By supporting the natural repair processes that happen during sleep.',
   },
   {
-    icon: BatteryCharging,
+    image: '/workshop/benefits/energize.jpg',
+    tag: 'Energize',
+    TagIcon: Lightning,
+    alt: 'A mother laughing as she lifts her daughter at home',
     title: 'Feel More Energetic, Happier & Emotionally Balanced',
     body: 'So you can enjoy your work, family and everyday life.',
   },
@@ -147,37 +181,67 @@ const BENEFITS: { icon: Icon; title: string; body: string }[] = [
 
 function Benefits() {
   return (
-    <section className="px-4 py-12 sm:py-20 lg:py-24" style={{ background: C.canvasAlt }}>
-      <SectionHeading>
-        What If You Could <span style={{ color: C.goldDeep }}>Bring Back</span> The
+    <section
+      className="kz-dark px-4 py-12 sm:py-20 lg:py-24"
+      style={{ background: C.plumDeep }}
+    >
+      <SectionHeading onDark>
+        What If You Could <span className="kz-mark" data-lego-mark="">Bring Back</span> The
         Energy &amp; Enthusiasm You Had As A Child &amp; Feel Healthier Than You
         Have In Years?
       </SectionHeading>
 
       <ul className="mx-auto mt-14 grid max-w-[1180px] grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {BENEFITS.map(({ icon: Glyph, title, body }, idx) => {
-          const skin = BEDS[idx % BEDS.length];
-          return (
-            <li
-              key={title}
-              data-lego=""
-              className="lego-hover flex flex-col rounded-3xl p-6"
-              style={{
-                ...legoBrick(idx),
-                background: C.canvas,
-                border: `1px solid ${C.line}`,
-                borderTop: `3px solid ${skin.bed}`,
-              }}
-            >
+        {BENEFITS.map(({ image, alt, title, body, tag, TagIcon }, idx) => (
+          <li
+            key={title}
+            data-lego=""
+            className="lego-hover kz-benefit group flex flex-col overflow-hidden rounded-3xl"
+            style={{
+              ...legoBrick(idx),
+              background: C.canvas,
+              border: `1px solid ${C.line}`,
+            }}
+          >
+            {/* The frame clips the zoom, so the photo grows inside its
+                corners rather than spilling over the card. */}
+            <div className="relative overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={asset(image)}
+                alt={alt}
+                width={1200}
+                height={720}
+                loading="lazy"
+                className="aspect-[5/3] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+              />
+              {/* The badge sits outside the zoom, so it stays still and sharp
+                  while the photo grows behind it. */}
               <span
-                data-lego-stud=""
-                className="lego-stud grid h-12 w-12 place-items-center rounded-2xl"
-                style={{ ...legoBrick(idx), background: skin.bed }}
+                className="kz-benefit-tag absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full py-1.5 pl-2 pr-3 text-[10.5px] font-bold uppercase tracking-[0.16em]"
+                style={{ background: 'rgba(255,254,251,0.94)', color: C.ink }}
               >
-                <Glyph weight="duotone" className="h-6 w-6" style={{ color: skin.fg }} />
+                <span
+                  aria-hidden
+                  className="grid h-5 w-5 place-items-center rounded-full"
+                  style={{ background: C.plumDeep }}
+                >
+                  <TagIcon weight="bold" className="h-3 w-3" style={{ color: C.gold }} />
+                </span>
+                {tag}
               </span>
+            </div>
+
+            <div className="flex flex-1 flex-col px-5 pb-6 pt-5">
+              {/* A short yellow rule that stretches on hover: the one accent
+                  the card carries. */}
+              <span
+                aria-hidden
+                className="block h-1 w-8 rounded-full transition-all duration-500 ease-out group-hover:w-16"
+                style={{ background: C.gold }}
+              />
               <h3
-                className="mt-5 font-display font-bold text-[18px] leading-snug"
+                className="mt-4 font-display font-bold text-[17.5px] leading-snug"
                 style={{ color: C.ink }}
               >
                 {title}
@@ -185,9 +249,9 @@ function Benefits() {
               <p className="mt-2 text-[14.5px] leading-relaxed" style={{ color: C.inkSoft }}>
                 {body}
               </p>
-            </li>
-          );
-        })}
+            </div>
+          </li>
+        ))}
       </ul>
     </section>
   );
@@ -196,10 +260,13 @@ function Benefits() {
 /* ══ Remember when ═════════════════════════════════════════════════════════ */
 function RememberWhen() {
   return (
-    <section className="px-4 py-12 sm:py-20 lg:py-24" style={{ background: C.canvasAlt }}>
-      <SectionHeading>
+    <section
+      className="kz-dark px-4 py-12 sm:py-20 lg:py-24"
+      style={{ background: C.plumDeep }}
+    >
+      <SectionHeading onDark>
         Remember When Falling Asleep Was The{' '}
-        <span style={{ color: C.goldDeep }}>Easiest</span> Part Of Your Day?
+        <span className="kz-mark" data-lego-mark="">Easiest</span> Part Of Your Day?
       </SectionHeading>
 
       <div className="mx-auto mt-10 max-w-[820px] text-center">
@@ -216,22 +283,22 @@ function RememberWhen() {
 
         <p
           className="mt-9 font-display font-bold text-[19px] uppercase leading-snug tracking-[0.04em] sm:text-[23px]"
-          style={{ color: C.ink }}
+          style={{ color: C.onDark }}
         >
           Growing Up Was Inevitable. Losing Your Sleep Wasn&rsquo;t.
         </p>
-        <p className="mt-5 text-[16px] leading-[1.75]" style={{ color: C.inkSoft }}>
+        <p className="mt-5 text-[16px] leading-[1.75]" style={{ color: C.onDarkMute }}>
           As a child, you went to bed without a care in the world.
           <br />
           Today, you carry the weight of your entire world to bed with you.
         </p>
         <p
           className="mt-5 font-display font-bold text-[18px] leading-snug sm:text-[20px]"
-          style={{ color: C.goldInk }}
+          style={{ color: C.gold }}
         >
           But peaceful sleep doesn&rsquo;t have to remain a childhood memory.
         </p>
-        <p className="mt-4 text-[16px] leading-[1.75]" style={{ color: C.inkSoft }}>
+        <p className="mt-4 text-[16px] leading-[1.75]" style={{ color: C.onDarkMute }}>
           And that&rsquo;s exactly what we&rsquo;ll help you work towards in this
           2-day workshop.
         </p>
@@ -310,7 +377,7 @@ function WhatYoullLearn() {
   return (
     <section className="px-4 py-12 sm:py-20 lg:py-24" style={{ background: C.canvas }}>
       <SectionHeading>
-        Here&apos;s What You&apos;ll <span style={{ color: C.goldDeep }}>Learn</span>{' '}
+        Here&apos;s What You&apos;ll <span className="kz-mark" data-lego-mark="">Learn</span>{' '}
         In The 2-Day Workshop
       </SectionHeading>
 
@@ -324,7 +391,7 @@ function WhatYoullLearn() {
               ...legoDelay(planIdx, 110),
               background: C.canvas,
               border: `1px solid ${C.lineStrong}`,
-              boxShadow: '0 24px 54px -34px rgba(88,51,79,0.3)',
+              boxShadow: '0 24px 54px -34px rgba(38, 48, 74,0.3)',
             }}
           >
             <header className="px-7 py-7 sm:px-8" style={{ background: C.plumDeep }}>

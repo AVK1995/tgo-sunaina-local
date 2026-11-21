@@ -17,7 +17,7 @@
  */
 import { useEffect } from 'react';
 
-const SELECTOR = '[data-lego],[data-lego-loop],[data-lego-stud]';
+const SELECTOR = '[data-lego],[data-lego-loop],[data-lego-stud],[data-lego-mark]';
 
 export default function LegoObserver() {
   useEffect(() => {
