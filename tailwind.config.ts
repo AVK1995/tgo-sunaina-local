@@ -16,10 +16,10 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        canvas: { DEFAULT: '#FFF9F1', alt: '#FBEDE5' },
-        /* ink = the plum headline. body = espresso. soft = warm taupe. */
-        ink: { DEFAULT: '#58334F', body: '#302724', soft: '#746763' },
-        plum: { DEFAULT: '#58334F', deeper: '#40243A', bed: '#F3E8EF' },
+        canvas: { DEFAULT: '#FFFEFB', alt: '#F3F5FA' },
+        /* ink = the navy headline. body = slate. soft = grey. */
+        ink: { DEFAULT: '#26304A', body: '#2E3443', soft: '#5E6577' },
+        plum: { DEFAULT: '#26304A', deeper: '#1D2539', bed: '#E8ECF4' },
         gold: {
           DEFAULT: '#F2B45F',
           pale: '#F5F0E8',
@@ -28,9 +28,9 @@ const config: Config = {
           deep: '#A96F17',
           ink: '#8F5B0D',
         },
-        coral: { DEFAULT: '#E96F55', bed: '#FDEBE5', ink: '#B93B23' },
-        rose: { bed: '#F7E6E1' },
-        line: { DEFAULT: '#EFE3D8', strong: '#E0CDBC' },
+        coral: { DEFAULT: '#F0A35E', bed: '#FDF0E4', ink: '#A24E16' },
+        rose: { bed: '#EEF2F8' },
+        line: { DEFAULT: '#E5E8EF', strong: '#D2D8E3' },
       },
       fontFamily: {
         display: ['var(--font-display)', 'Inter', 'system-ui', 'sans-serif'],

@@ -44,11 +44,11 @@ export default function StickyCta() {
         atFinal ? 'pointer-events-none opacity-0' : 'opacity-100'
       }`}
       style={{
-        background: 'rgba(255,249,241,0.96)',
+        background: 'rgba(255, 255, 255,0.96)',
         backdropFilter: 'blur(14px)',
         WebkitBackdropFilter: 'blur(14px)',
         borderTop: `1px solid ${C.lineStrong}`,
-        boxShadow: '0 -12px 36px -24px rgba(88,51,79,0.45)',
+        boxShadow: '0 -12px 36px -24px rgba(38, 48, 74,0.45)',
         paddingBottom: 'env(safe-area-inset-bottom)',
       }}
     >
@@ -79,7 +79,7 @@ export default function StickyCta() {
             background: C.gold,
             color: C.inkBody,
             border: `1px solid ${C.goldDeep}`,
-            boxShadow: '0 14px 30px -14px rgba(88,51,79,0.5)',
+            boxShadow: '0 14px 30px -14px rgba(38, 48, 74,0.5)',
             ['--shimmer' as string]: 'rgba(255,255,255,0.45)',
           }}
         >

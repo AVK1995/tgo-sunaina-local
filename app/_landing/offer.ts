@@ -20,6 +20,22 @@ export const PRICE_RUPEES = Number.isFinite(RAW_PRICE) && RAW_PRICE > 0 ? RAW_PR
 export const PRICE_PAISE = PRICE_RUPEES * 100;
 export const PRICE = `₹${PRICE_RUPEES.toLocaleString('en-IN')}`;
 
+/* The two checkout add-ons, priced from env exactly like the base price: a
+   positive number or the fallback, never zero. ⚠️ The fallbacks are
+   placeholders until the client confirms the real prices. */
+const addOnPrice = (raw: string | undefined, fallback: number) => {
+  const n = Number(raw);
+  return Number.isFinite(n) && n > 0 ? n : fallback;
+};
+export const RECORDING_PRICE_RUPEES = addOnPrice(
+  process.env.NEXT_PUBLIC_RECORDING_PRICE_RUPEES,
+  500,
+);
+export const CALL_PRICE_RUPEES = addOnPrice(process.env.NEXT_PUBLIC_CALL_PRICE_RUPEES, 1500);
+
+/** "₹1,500", the one rupee format used everywhere. */
+export const rupees = (n: number) => `₹${n.toLocaleString('en-IN')}`;
+
 export const WORKSHOP_NAME = '2-Day ‘Sleep Like You’re 2 Again’ Workshop';
 
 /**
@@ -76,6 +92,10 @@ export const SESSION_TIMES = EVENTS.map((e) => `Day ${e.day}: ${e.time}`).join('
  * ⚠️ REQUIRED BEFORE LAUNCH. Use an invite for THIS workshop's group.
  */
 export const WHATSAPP_INVITE = process.env.NEXT_PUBLIC_WHATSAPP_INVITE ?? '';
+/** The separate WhatsApp group recordings buyers join. ⚠️ REQUIRED BEFORE LAUNCH. */
+export const RECORDINGS_WHATSAPP_INVITE = process.env.NEXT_PUBLIC_RECORDINGS_WHATSAPP_INVITE ?? '';
+/** Where private-call buyers book their slot. ⚠️ REQUIRED BEFORE LAUNCH. */
+export const CALL_BOOKING_URL = process.env.NEXT_PUBLIC_CALL_BOOKING_URL ?? '';
 
 /** The next click is a payment. Every CTA on the page, including the docked
  *  bar, points here. */

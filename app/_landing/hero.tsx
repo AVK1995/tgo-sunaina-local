@@ -63,11 +63,11 @@ export function AnnouncementBar() {
               className="lego-pulse-dot inline-block h-[7px] w-[7px] shrink-0 rounded-full"
               style={{
                 background: C.coral,
-                ['--dot-pulse' as string]: 'rgba(233,111,85,0.6)',
+                ['--dot-pulse' as string]: 'rgba(240, 163, 94,0.6)',
               }}
             />
           ) : (
-            <span aria-hidden style={{ color: 'rgba(224,164,79,0.55)' }}>
+            <span aria-hidden style={{ color: 'rgba(224, 164, 79,0.55)' }}>
               |
             </span>
           )}
@@ -83,7 +83,7 @@ export function AnnouncementBar() {
       style={{
         background: C.plumDeep,
         color: C.onDark,
-        ['--shimmer' as string]: 'rgba(242,180,95,0.14)',
+        ['--shimmer' as string]: 'rgba(242, 180, 95,0.14)',
       }}
     >
       {/* The mask lives on this inner element, NOT on the bar. A mask applies to
@@ -148,7 +148,7 @@ export function Hero() {
                 className="lego-pulse-dot inline-block h-2 w-2 shrink-0 rounded-full"
                 style={{
                   background: C.coral,
-                  ['--dot-pulse' as string]: 'rgba(233,111,85,0.6)',
+                  ['--dot-pulse' as string]: 'rgba(240, 163, 94,0.6)',
                 }}
               />
               {WORKSHOP_NAME}
@@ -167,7 +167,7 @@ export function Hero() {
               style={{ color: C.ink }}
             >
               Learn How To Get{' '}
-              <span style={{ color: C.goldDeep }}>Deep, Restful Sleep</span> Even
+              <span className="kz-mark" data-lego-mark="">Deep, Restful Sleep</span> Even
               If You&rsquo;ve Struggled With Sleepless Nights For Years
             </h1>
 
@@ -200,7 +200,7 @@ export function Hero() {
                 background: C.canvas,
                 border: `1px solid ${C.lineStrong}`,
                 boxShadow:
-                  '0 0 0 8px rgba(242,180,95,0.10), 0 30px 60px -32px rgba(88,51,79,0.45)',
+                  '0 0 0 8px rgba(242, 180, 95,0.10), 0 30px 60px -32px rgba(38, 48, 74,0.45)',
               }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}

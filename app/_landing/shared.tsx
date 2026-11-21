@@ -8,14 +8,12 @@
  * The colour derivation and the contrast maths behind every value here live in
  * ../../design-system.project.md. The short version:
  *
- *   SUNRISE. Warm IVORY is the environment, DEEP PLUM is the structure, GOLDEN
- *   APRICOT is the accent, and SUNRISE CORAL is the CTA. Espresso reads, warm
- *   taupe supports. Four icon beds, not seven.
+ *   NIGHT SKY. Soft WHITE and NIGHT NAVY sections alternate, and GOLDEN APRICOT
+ *   (the site's original CTA colour) is the accent and the button. Navy comes
+ *   from the client's reference page. Flat colours only on surfaces.
  *
- *   The `gold*` token names hold apricot and the `coral*` names hold sunrise
- *   coral: each hue moved within its own family, so the names still describe
- *   what they carry. The plum family WAS called navy and was renamed, because
- *   that one no longer did.
+ *   The token NAMES are kept from the previous skin so no call site changes:
+ *   `plum*` now holds navy, `gold*` holds apricot, `coral*` holds a soft amber.
  */
 import { ArrowRight } from '@phosphor-icons/react/dist/ssr';
 import Link from 'next/link';
@@ -23,79 +21,46 @@ import Link from 'next/link';
 import { CHECKOUT_HREF } from './offer';
 
 export const C = {
-  /* ══ SUNRISE · early morning light on soft earth ═══════════════════════
-     Warm ivory ground, a deep plum stage, and one sunrise that arrives in two
-     temperatures: apricot for the light that is already up, coral for the
-     moment it breaks. Espresso does the reading.
+  /* ══ NIGHT SKY · calm, flat, easy on the eye ════════════════════════════
+     Each accent has a SURFACE tone and a separate INK tone, and they are not
+     interchangeable: apricot is a fill, never small text on white.
+     Contrast measured against canvas (#FFFEFB) unless stated. ── */
 
-     Every value below is measured, not picked. The rule that governs the whole
-     palette: a colour warm enough to feel like sunrise is never dark enough to
-     be text. So each accent has a SURFACE tone and a separate INK tone, and
-     they are not interchangeable. Using the surface tone as text is how a page
-     ends up with an illegible eyebrow. ── */
+  /* ── environment. Never pure white: the slight warmth stops the glare ── */
+  canvas: '#FFFEFB',    // Soft White. Most of the page
+  canvasAlt: '#F3F5FA', // Mist. The alternating band
 
-  /* ── environment. Never pure white: ivory is warm and does not glare ── */
-  canvas: '#FFF9F1',    // Warm Ivory. 60 to 70% of the page
-  canvasAlt: '#FBEDE5', // Blush Cream. The alternating band
+  /* ── the navy structure. Dark sections, and every headline ── */
+  plumDeep: '#26304A',    // Night Navy. Dark bands and headlines, 13:1
+  plumDeeper: '#1D2539',  // A step darker, for depth beneath it
+  plumBed: '#E8ECF4',     // A navy-tinted bed on light. Navy reads 11:1 on it
 
-  /* ── the plum stage ────────────────────────────────────────────────────
-     One dark section (the hero) plus contained dark objects. plumDeep is also
-     the HEADLINE ink on light, at 10:1: the same colour doing both jobs is
-     what ties the stage to the page. */
-  plumDeep: '#58334F',    // Deep Plum. Stage floor, and every headline
-  plumDeeper: '#40243A',  // The gradient floor beneath it, so the stage has depth
-  plumBed: '#F3E8EF',     // A plum-tinted bed on light. Plum reads 8.8:1 on it
+  /* ── ink ── */
+  ink: '#26304A',       // Night Navy. Headings and emphasis, 13:1
+  inkBody: '#2E3443',   // Slate. Body copy and button labels, 12.3:1
+  inkSoft: '#5E6577',   // Grey. Supporting text, 5.8:1 / 5.3:1 on Mist
+  onDark: '#FFFFFF',    // white on navy, 13:1
+  onDarkMute: 'rgba(255,255,255,0.78)',
 
-  /* ── ink. Three levels, and the split is the brief's own ───────────────
-     Deep Plum is the HEADLINE, Espresso is the body, Warm Taupe is support.
-     `ink` holds the plum because every existing call site for it is a
-     font-display heading or a <strong>, which is exactly the headline job.
-     Body copy is not styled inline at all: it inherits Espresso from the
-     cascade (`body { color: var(--ink-body) }` in globals.css). */
-  ink: '#58334F',       // Deep Plum. Headings and emphasis, 10:1 on the canvas
-  inkBody: '#302724',   // Espresso. Body copy, 13.9:1. Set on <body>, inherited
-  inkSoft: '#746763',   // Warm Taupe. Supporting text, 5.2:1 ivory / 4.8:1 blush
-  onDark: '#FFF9F1',    // ivory on the stage, 10:1
-  onDarkMute: 'rgba(255,249,241,0.74)',
-
-  /* ── apricot: the accent, spent like a spotlight ───────────────────────
-     THREE tones and they are not interchangeable. `gold` is a MARK on light
-     (1.75:1, so never text there) but reads as text ON THE STAGE at 5.7:1.
-     `goldDeep` is 4.0:1 and is the headline highlight only. Anything at label
-     or eyebrow size uses `goldInk` at 5.5:1. */
-  gold: '#F2B45F',      // Golden Apricot. Icons, marks, the S.T.A.R.T. method
-  /* Icon beds stay NEUTRAL-warm on purpose. An apricot bed behind an apricot
-     glyph makes every icon on the page one apricot object, and the accent
-     stops being a spotlight. The glyph keeps the colour, the bed does not. */
-  goldPale: '#F5F0E8',
-  /* The ONE apricot surface, spent on the two money moments: the lead item in
-     the toolkit and the price box in the recap. Apricot as a ground anywhere
-     else is what makes a page read as a template. */
-  goldWash: '#FDF0DC',
-  goldMid: '#E0A44F',   // hairline flourishes and rules only, never a numeral
-  goldDeep: '#A96F17',  // headline highlight on light: LARGE TEXT ONLY (4.0:1)
+  /* ── golden apricot: the accent and the button (the original CTA colours) ── */
+  gold: '#F2B45F',      // Golden Apricot. THE CTA fill (the original), and text on navy
+  goldPale: '#F5F0E8',  // icon beds and eyebrows
+  goldWash: '#FDF0DC',  // the one yellow surface for highlighted panels
+  goldMid: '#E0A44F',   // hairlines and rules only
+  goldDeep: '#A96F17',  // the CTA rim, and large text only (4.0:1)
   goldInk: '#8F5B0D',   // small text and eyebrows on light (5.5:1)
 
-  /* ── coral: the sunrise breaking. The CTA, and almost nothing else ─────
-     Sunrise Coral is the button on light ground, carrying an ESPRESSO label at
-     4.8:1. White on it is 3.1:1 and fails, which is why the label is espresso
-     and not white: it is also the warmer, more expensive-looking answer. */
-  coral: '#E96F55',     // Sunrise Coral. The CTA fill on light, and the live dot
-  coralBed: '#FDEBE5',
-  coralInk: '#B93B23',  // coral as readable TEXT, 5.4:1 ivory / 4.9:1 blush
+  /* ── soft amber: live dots and the occasional marker, nothing large ── */
+  coral: '#F0A35E',
+  coralBed: '#FDF0E4',
+  coralInk: '#A24E16',  // amber as readable text, 5.2:1 on its bed
 
-  /* ── dusty rose ────────────────────────────────────────────────────────
-     Ships as its WASH only. At full strength (#DDA49B) it is a 2:1 surface
-     that can carry espresso and nothing else, and more to the point it is a
-     warm mid-tone sitting a few degrees from Sunrise Coral: putting the two
-     near each other makes them compete at the exact moment the CTA has to
-     win. As a wash it does the job the brief actually asks of it, a subtle
-     card ground, without spending any of the coral's authority. */
-  roseBed: '#F7E6E1',
+  /* ── a cool card ground ── */
+  roseBed: '#EEF2F8',
 
   /* ── rules ── */
-  line: '#EFE3D8',
-  lineStrong: '#E0CDBC',
+  line: '#E5E8EF',
+  lineStrong: '#D2D8E3',
 } as const;
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -115,7 +80,7 @@ export function SectionEyebrow({ text }: { text: string }) {
         className="lego-pulse-dot inline-block h-1.5 w-1.5 shrink-0 rounded-full"
         style={{
           background: C.coral,
-          ['--dot-pulse' as string]: 'rgba(233,111,85,0.5)',
+          ['--dot-pulse' as string]: 'rgba(240, 163, 94,0.5)',
         }}
       />
       {text}
@@ -131,10 +96,13 @@ export function SectionHeading({
   eyebrow,
   children,
   sub,
+  onDark = false,
 }: {
   eyebrow?: string;
   children: React.ReactNode;
   sub?: React.ReactNode;
+  /** For the navy sections: white headline, softened white deck. */
+  onDark?: boolean;
 }) {
   return (
     <div className="mx-auto max-w-[820px] px-1 text-center">
@@ -145,14 +113,14 @@ export function SectionHeading({
       )}
       <h2
         className="font-display font-bold text-[clamp(28px,4.4vw,46px)] leading-[1.14]"
-        style={{ color: C.ink, textWrap: 'balance' } as React.CSSProperties}
+        style={{ color: onDark ? C.onDark : C.ink, textWrap: 'balance' } as React.CSSProperties}
       >
         {children}
       </h2>
       {sub && (
         <p
           className="mx-auto mt-5 max-w-[660px] text-[15.5px] leading-relaxed sm:text-[16.5px]"
-          style={{ color: C.inkSoft }}
+          style={{ color: onDark ? C.onDarkMute : C.inkSoft }}
         >
           {sub}
         </p>
@@ -216,7 +184,7 @@ export function PrimaryCTA({
            rim recedes to 1.83:1, so it stops working exactly where it stops
            being needed. */
         border: `1px solid ${C.goldDeep}`,
-        boxShadow: '0 14px 30px -14px rgba(88,51,79,0.5)',
+        boxShadow: '0 14px 30px -14px rgba(38, 48, 74,0.5)',
         ['--shimmer' as string]: 'rgba(255,255,255,0.45)',
       }}
     >

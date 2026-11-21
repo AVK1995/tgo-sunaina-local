@@ -20,15 +20,19 @@ import { C, PrimaryCTA, SectionHeading } from './shared';
 const CREDENTIALS = ['15+ Years Of Experience', 'Certified Yoga Teacher', 'Certified Life Coach'];
 
 function Guide() {
-  const strong = { color: C.ink, fontWeight: 700 };
+  const strong = { color: C.onDark, fontWeight: 700 };
 
   return (
-    <section className="px-4 py-12 sm:py-20 lg:py-24" style={{ background: C.canvasAlt }}>
+    <section
+      className="kz-dark px-4 py-12 sm:py-20 lg:py-24"
+      style={{ background: C.plumDeep }}
+    >
       <SectionHeading
+        onDark
         eyebrow="MEET YOUR COACH"
         sub="Yoga, Mindfulness & Personal Development Coach"
       >
-        <span style={{ color: C.goldDeep }}>Sunaina Setia</span>
+        <span className="kz-mark" data-lego-mark="">Sunaina Setia</span>
       </SectionHeading>
 
       <ul className="mx-auto mt-6 flex max-w-[760px] flex-wrap justify-center gap-2">
@@ -55,7 +59,7 @@ function Guide() {
           style={{ border: `1px solid ${C.line}` }}
         />
 
-        <div className="space-y-4 text-[16px] leading-[1.75]" style={{ color: C.inkSoft }}>
+        <div className="space-y-4 text-[16px] leading-[1.75]" style={{ color: C.onDarkMute }}>
           <p>
             For over{' '}
             <strong style={strong}>
@@ -150,9 +154,12 @@ const FAQS: { q: string; a: string[] }[] = [
 
 function Faq() {
   return (
-    <section className="px-4 py-12 sm:py-20 lg:py-24" style={{ background: C.canvasAlt }}>
-      <SectionHeading>
-        Frequently Asked <span style={{ color: C.goldDeep }}>Questions</span>
+    <section
+      className="kz-dark px-4 py-12 sm:py-20 lg:py-24"
+      style={{ background: C.plumDeep }}
+    >
+      <SectionHeading onDark>
+        Frequently Asked <span className="kz-mark" data-lego-mark="">Questions</span>
       </SectionHeading>
 
       <div className="mx-auto mt-12 grid max-w-[820px] gap-3">

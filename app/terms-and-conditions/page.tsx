@@ -4,7 +4,13 @@ import Link from 'next/link';
 import LegalPageLayout from '@/components/LegalPageLayout';
 
 import { LEGAL } from '../_landing/legal';
-import { EVENT_SCHEDULE, PRICE } from '../_landing/offer';
+import {
+  CALL_PRICE_RUPEES,
+  EVENT_SCHEDULE,
+  PRICE,
+  RECORDING_PRICE_RUPEES,
+  rupees,
+} from '../_landing/offer';
 
 export const metadata: Metadata = {
   title: `Terms and Conditions | ${LEGAL.brand}`,
@@ -31,12 +37,20 @@ export default function TermsPage() {
         {EVENT_SCHEDULE}, conducted in Hindi and English, together with the
         digital bonuses listed at checkout. The fee is {PRICE}.
       </p>
+      <p>
+        Two optional add-ons can be bought at checkout: the workshop recordings
+        for Day 1 and Day 2 ({rupees(RECORDING_PRICE_RUPEES)}), shared in a
+        separate WhatsApp group, and a private one-on-one call with Sunaina
+        ({rupees(CALL_PRICE_RUPEES)}), booked through the link provided after
+        purchase. You receive only the add-ons you paid for.
+      </p>
 
       <h2>3. Sessions and scheduling</h2>
       <ul>
         <li>
-          Sessions run live at the advertised times. Where a recording is made
-          available, it is a courtesy and not a guaranteed part of the workshop.
+          Sessions run live at the advertised times. Recordings are part of the
+          workshop only for buyers of the recordings add-on. For everyone else,
+          any recording made available is a courtesy and not guaranteed.
         </li>
         <li>
           We may move a session for reasons outside our control. Registered

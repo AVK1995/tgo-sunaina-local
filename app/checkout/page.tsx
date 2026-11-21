@@ -23,14 +23,24 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   ArrowLeft,
-  CaretDown,
+  CalendarBlank,
+  Check,
   CheckCircle,
   CreditCard,
+  Gift,
   Lock,
+  Translate,
 } from '@phosphor-icons/react/dist/ssr';
 
 import { asset } from '../_landing/asset-version';
-import { EVENT_SCHEDULE, PRICE, WORKSHOP_NAME } from '../_landing/offer';
+import {
+  CALL_PRICE_RUPEES,
+  EVENT_SCHEDULE,
+  EVENTS,
+  PRICE,
+  RECORDING_PRICE_RUPEES,
+  rupees,
+} from '../_landing/offer';
 import PaymentLogos from '@/components/PaymentLogos';
 import BrandMark from '../_landing/brand-mark';
 import SiteFooter from '@/components/SiteFooter';
@@ -42,7 +52,10 @@ import {
 } from '@/lib/track';
 
 import { C } from '../_landing/shared';
-import { BONUSES, LEAD_ITEM } from './included';
+import { orderTypeFor, parseOrderType, priceOrder, THANK_YOU_PATH, type OrderBreakdown } from '@/lib/order';
+import Bumps from './bumps';
+import ThemedSelect from './themed-select';
+import { BONUSES, BUMPS, LEAD_ITEM } from './included';
 
 declare global {
   interface Window {
@@ -115,6 +128,34 @@ type Fields = {
   occupation: string;
 };
 
+/* Counts a number smoothly to its new value, so the total visibly moves when
+   an add-on is ticked. Reduced-motion users get the new value at once. */
+function useTweened(target: number, ms = 450) {
+  const [shown, setShown] = useState(target);
+  const from = useRef(target);
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      from.current = target;
+      setShown(target);
+      return;
+    }
+    const start = performance.now();
+    const a = from.current;
+    let raf = 0;
+    const step = (t: number) => {
+      const p = Math.min(1, (t - start) / ms);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const v = Math.round(a + (target - a) * eased);
+      setShown(v);
+      from.current = v;
+      if (p < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [target, ms]);
+  return shown;
+}
+
 export default function CheckoutPage() {
   const [f, setF] = useState<Fields>({
     firstName: '',
@@ -127,6 +168,30 @@ export default function CheckoutPage() {
   });
   const [touched, setTouched] = useState(false);
   const [busy, setBusy] = useState(false);
+  /* The two add-ons. Only the choice travels to the server; the server prices
+     it. The total shown here uses the same pricing function. */
+  const [recordings, setRecordings] = useState(false);
+  const [call, setCall] = useState(false);
+  const priced = priceOrder(orderTypeFor(recordings, call));
+  const shownTotal = useTweened(priced.totalAmount);
+
+  /* The mobile sticky bar hides while the in-form add-ons and pay button are
+     on screen, so the buyer never sees the same controls twice. */
+  const ctaZoneRef = useRef<HTMLDivElement>(null);
+  const [ctaZoneVisible, setCtaZoneVisible] = useState(false);
+  useEffect(() => {
+    const el = ctaZoneRef.current;
+    if (!el) return;
+    /* The bottom 200px is where the bar itself sits. A card edge peeking out
+       under the bar on load must not count as "on screen", or the bar would
+       hide the moment the page opens. */
+    const io = new IntersectionObserver(([e]) => setCtaZoneVisible(e.isIntersecting), {
+      threshold: 0,
+      rootMargin: '0px 0px -200px 0px',
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   const [failed, setFailed] = useState('');
 
   /* Arrival at the checkout. GA4 gets begin_checkout, Meta gets AddToCart.
@@ -186,7 +251,7 @@ export default function CheckoutPage() {
       city: f.city.trim(),
       country: f.country,
       occupation: f.occupation,
-    });
+    }, priced.totalAmount);
 
     try {
       const sdk = await loadRazorpay();
@@ -203,6 +268,8 @@ export default function CheckoutPage() {
           city: f.city.trim(),
           country: f.country,
           occupation: f.occupation,
+          recordings,
+          call,
           ...collectSignals(),
         }),
       });
@@ -231,7 +298,9 @@ export default function CheckoutPage() {
            silently 404s into a blank tile. JPG rather than WebP: the sheet is
            third-party surface and a plain raster is the safe format there. */
         image: `${window.location.origin}${asset('/brand/start-right-square.jpg')}`,
-        description: "2-Day Sleep Like You're 2 Again Workshop",
+        description: priced.type === 'workshop'
+          ? "2-Day Sleep Like You're 2 Again Workshop"
+          : "2-Day Sleep Like You're 2 Again Workshop + add-ons",
         prefill: {
           name: `${f.firstName.trim()} ${f.lastName.trim()}`.trim(),
           email: f.email.trim(),
@@ -243,7 +312,11 @@ export default function CheckoutPage() {
            finishes in their bank app and never returns is still counted. This
            handler only moves the buyer on. */
         handler: (r: { razorpay_payment_id: string }) => {
-          window.location.href = `/thank-you?p=${encodeURIComponent(r.razorpay_payment_id)}`;
+          /* Each order type has its own thank-you page, with the links that
+             order includes. The type comes back from the server that priced
+             it, not from local state. */
+          const page = THANK_YOU_PATH[parseOrderType(order.orderType)];
+          window.location.href = `${page}?p=${encodeURIComponent(r.razorpay_payment_id)}`;
         },
       });
       rzp.open();
@@ -254,22 +327,14 @@ export default function CheckoutPage() {
   };
 
   return (
-    <main className="min-h-screen" style={{ background: C.canvasAlt }}>
+    <main className="min-h-screen pb-44 lg:pb-0" style={{ background: C.canvasAlt }}>
       <Header />
 
-      <section className="py-8 md:py-14">
+      <section className="pb-8 pt-5 md:pb-14 md:pt-8">
         <div className="mx-auto max-w-6xl px-4 sm:px-5 md:px-8">
-          <div className="mb-8 text-center sm:mb-10 md:mb-12">
-            <span
-              className="inline-flex max-w-full items-center gap-1.5 rounded-full px-3 py-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em]"
-              style={{ background: C.goldWash, color: C.goldInk }}
-            >
-              <CheckCircle weight="fill" className="h-3 w-3 shrink-0" />
-              {WORKSHOP_NAME}
-            </span>
-
+          <div className="mb-5 text-center sm:mb-6 md:mb-8">
             <h1
-              className="mt-4 font-display font-bold text-[22px] leading-tight sm:text-[28px] md:text-[34px]"
+              className="font-display font-bold text-[22px] leading-tight sm:text-[28px] md:text-[34px]"
               style={{ color: C.ink, textWrap: 'balance' } as React.CSSProperties}
             >
               Add your details to confirm your seat.
@@ -284,6 +349,7 @@ export default function CheckoutPage() {
               accordion on a phone so it never pushes the fields below the fold. */}
           <div className="grid gap-8 lg:grid-cols-[1fr_minmax(320px,380px)] lg:items-start lg:gap-10">
             <form
+              id="checkout-form"
               onSubmit={startPayment}
               noValidate
               className="rounded-2xl p-6 sm:p-8"
@@ -356,7 +422,7 @@ export default function CheckoutPage() {
                     buyer types, so the number that reaches Meta and Razorpay is
                     always a clean E.164 and the country arrives as an ISO-2 we
                     can hash. */}
-                <label className="block">
+                <div className="block">
                   <span
                     className="mb-1.5 block text-[10.5px] font-bold uppercase tracking-[0.16em]"
                     style={{ color: C.inkSoft }}
@@ -364,24 +430,18 @@ export default function CheckoutPage() {
                     WhatsApp number
                   </span>
                   <div className="flex gap-2">
-                    <select
-                      className="w-[124px] shrink-0 rounded-xl px-3 py-3 text-[15px] outline-none"
-                      autoComplete="tel-country-code"
-                      aria-label="Country dialling code"
+                    <ThemedSelect
+                      ariaLabel="Country dialling code"
                       value={f.country}
-                      onChange={(e) => setF((s) => ({ ...s, country: e.target.value }))}
-                      style={{
-                        background: C.canvasAlt,
-                        color: C.ink,
-                        border: `1px solid ${C.line}`,
+                      onChange={(x) => setF((s) => ({ ...s, country: x }))}
+                      options={COUNTRIES.map((c) => ({ value: c.iso, label: c.label }))}
+                      renderValue={(o) => {
+                        const c = COUNTRIES.find((x) => x.iso === o.value);
+                        return c ? `${c.iso.toUpperCase()} ${c.dial}` : o.label;
                       }}
-                    >
-                      {COUNTRIES.map((c) => (
-                        <option key={c.iso} value={c.iso}>
-                          {c.label}
-                        </option>
-                      ))}
-                    </select>
+                      className="w-[124px] shrink-0"
+                      listClassName="w-60"
+                    />
                     <input
                       className="w-full rounded-xl px-4 py-3 text-[15px] outline-none"
                       type="tel"
@@ -401,37 +461,33 @@ export default function CheckoutPage() {
                   <span className="mt-1.5 block text-[11.5px]" style={{ color: C.inkSoft }}>
                     Your session reminders go here.
                   </span>
-                </label>
+                </div>
 
-                <label className="block">
+                <div className="block">
                   <span
                     className="mb-1.5 block text-[10.5px] font-bold uppercase tracking-[0.16em]"
                     style={{ color: C.inkSoft }}
                   >
                     Which best describes you?
                   </span>
-                  <select
-                    className="w-full rounded-xl px-4 py-3 text-[15px] outline-none"
+                  <ThemedSelect
+                    ariaLabel="Which best describes you?"
                     value={f.occupation}
-                    onChange={(e) => setF((s) => ({ ...s, occupation: e.target.value }))}
-                    aria-invalid={(touched && !v.occupation) || undefined}
-                    style={{
-                      background: C.canvasAlt,
-                      color: f.occupation ? C.ink : C.inkSoft,
-                      border: `1px solid ${touched && !v.occupation ? C.coralInk : C.line}`,
-                    }}
-                  >
-                    <option value="" disabled>
-                      Select one
-                    </option>
-                    {OCCUPATIONS.map((o) => (
-                      <option key={o.value} value={o.value}>
-                        {o.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+                    onChange={(x) => setF((s) => ({ ...s, occupation: x }))}
+                    options={OCCUPATIONS}
+                    invalid={touched && !v.occupation}
+                    listClassName="w-full"
+                  />
+                </div>
               </div>
+
+              <div ref={ctaZoneRef}>
+              <Bumps
+                recordings={recordings}
+                call={call}
+                onRecordings={setRecordings}
+                onCall={setCall}
+              />
 
               {touched && !valid && (
                 <p className="mt-4 text-[12.5px]" style={{ color: C.coralInk }}>
@@ -459,8 +515,11 @@ export default function CheckoutPage() {
                   ['--shimmer' as string]: 'rgba(255,255,255,0.45)',
                 }}
               >
-                {busy ? 'Taking you to payment…' : `Pay ${PRICE} & Reserve My Spot`}
+                {busy
+                  ? 'Taking you to payment…'
+                  : `Pay ${rupees(shownTotal)} & Reserve My Spot`}
               </button>
+              </div>
 
               {/* The pointers that sit under the checkout CTA.
                   Dot-separated on one line, each nowrap so a narrow phone wraps
@@ -497,13 +556,23 @@ export default function CheckoutPage() {
             </form>
 
             <div className="lg:sticky lg:top-8">
-              <OrderSummary />
+              <OrderSummary priced={priced} shownTotal={shownTotal} />
             </div>
           </div>
         </div>
       </section>
 
       <SiteFooter />
+
+      <MobileCheckoutBar
+        hidden={ctaZoneVisible}
+        busy={busy}
+        recordings={recordings}
+        call={call}
+        onRecordings={setRecordings}
+        onCall={setCall}
+        total={shownTotal}
+      />
     </main>
   );
 }
@@ -531,48 +600,36 @@ function Header() {
   );
 }
 
-/* ── Order summary: lead item, included bonuses, the ruled Total, then the
-      method tile. Accordion below lg, always open from lg up. ───────────── */
-function OrderSummary() {
-  const [open, setOpen] = useState(false);
-
+/* ── Order summary: what is being bought, the total, then the three free
+      bonuses and the schedule in their own boxes, then the payment method.
+      Always fully open: the bonuses are part of the reason to buy, so they
+      are never folded away behind a tap. ─────────────────────────────── */
+function OrderSummary({
+  priced,
+  shownTotal,
+}: {
+  priced: OrderBreakdown;
+  shownTotal: number;
+}) {
   return (
     <div
       className="rounded-2xl p-5 sm:p-6"
       style={{ background: C.canvas, border: `1px solid ${C.line}` }}
     >
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        aria-expanded={open}
-        aria-controls="order-summary-details"
-        className="flex w-full items-center justify-between gap-3 text-left lg:pointer-events-none"
+      <span
+        className="block text-[10.5px] font-bold uppercase tracking-[0.2em]"
+        style={{ color: C.goldInk }}
       >
-        <span className="min-w-0">
-          <span
-            className="block text-[10.5px] font-bold uppercase tracking-[0.2em]"
-            style={{ color: C.goldInk }}
-          >
-            Order summary
-          </span>
-          <span
-            className="mt-2 block font-display font-bold text-[20px] leading-snug sm:text-[22px]"
-            style={{ color: C.ink }}
-          >
-            The 2-Day Workshop, in full
-          </span>
-          <span className="mt-1 block text-[12px] lg:hidden" style={{ color: C.inkSoft }}>
-            {open ? 'Tap to hide details' : 'Tap to view what is included'}
-          </span>
-        </span>
-        <CaretDown
-          weight="bold"
-          className={`h-4 w-4 shrink-0 transition-transform lg:hidden ${open ? 'rotate-180' : ''}`}
-          style={{ color: C.inkSoft }}
-        />
-      </button>
+        Order summary
+      </span>
+      <span
+        className="mt-2 block font-display font-bold text-[20px] leading-snug sm:text-[22px]"
+        style={{ color: C.ink }}
+      >
+        The 2-Day Workshop, in full
+      </span>
 
-      {/* Lead item, always visible: it is the thing being bought. */}
+      {/* Lead item: the thing being bought. */}
       <div
         className="mt-5 flex items-start gap-3 rounded-2xl p-3"
         style={{ background: C.canvasAlt, border: `1px solid ${C.line}` }}
@@ -607,35 +664,21 @@ function OrderSummary() {
         </div>
       </div>
 
-      <div id="order-summary-details" className={`${open ? 'block' : 'hidden'} lg:block`}>
-        <div className="mt-4 space-y-1.5">
-          <p
-            className="text-[10.5px] font-bold uppercase tracking-[0.16em]"
-            style={{ color: C.inkSoft }}
-          >
-            Free bonuses included
-          </p>
-          <ul className="space-y-1.5 text-[12px] sm:text-[12.5px]" style={{ color: C.inkSoft }}>
-            {BONUSES.map((b) => (
-              <li key={b.title} className="flex items-start gap-2">
-                <CheckCircle
-                  weight="fill"
-                  className="mt-[3px] h-3.5 w-3.5 shrink-0"
-                  style={{ color: C.coralInk }}
-                />
-                <span className="flex-1 leading-snug">{b.title}</span>
-                <span className="shrink-0 font-semibold">Free</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+      {/* Add-ons, only once ticked: they change the total. */}
+      {(priced.recordingAmount > 0 || priced.callAmount > 0) && (
+        <ul className="mt-3 space-y-2">
+          {priced.recordingAmount > 0 && (
+            <AddOnRow label={BUMPS.recordings.summary} amount={priced.recordingAmount} />
+          )}
+          {priced.callAmount > 0 && (
+            <AddOnRow label={BUMPS.call.summary} amount={priced.callAmount} />
+          )}
+        </ul>
+      )}
 
-      <div className="my-4 h-px" style={{ background: C.line }} />
-
-      {/* The ruled Total. Gold appears here and nowhere else on the page. */}
+      {/* The ruled Total. Counts to its new value when an add-on is ticked. */}
       <div
-        className="flex items-baseline justify-between gap-3 rounded-2xl px-4 py-3.5"
+        className="mt-4 flex items-baseline justify-between gap-3 rounded-2xl px-4 py-3.5"
         style={{ background: C.goldWash, border: `1px solid ${C.lineStrong}` }}
       >
         <span
@@ -644,19 +687,85 @@ function OrderSummary() {
         >
           Total
         </span>
-        <div className="text-right">
-          <div
-            className="font-display font-bold text-[26px] leading-none tabular-nums sm:text-[32px]"
-            style={{ color: C.goldDeep }}
-          >
-            {PRICE}
-          </div>
+        <div
+          className="font-display font-bold text-[26px] leading-none tabular-nums sm:text-[32px]"
+          style={{ color: C.goldDeep }}
+        >
+          {rupees(shownTotal)}
         </div>
+      </div>
+
+      {/* The three free bonuses, in their own box. */}
+      <div
+        className="mt-5 rounded-2xl p-4"
+        style={{ background: C.goldWash, border: `1px solid ${C.goldMid}` }}
+      >
+        <p
+          className="flex items-center gap-2 font-display font-bold text-[14.5px]"
+          style={{ color: C.ink }}
+        >
+          <Gift weight="duotone" className="h-5 w-5" style={{ color: C.goldDeep }} />3 Free
+          Bonuses Included
+        </p>
+        <ul className="mt-3 space-y-2.5">
+          {BONUSES.map((b) => (
+            <li key={b.title} className="flex items-start gap-2.5">
+              <CheckCircle
+                weight="fill"
+                className="mt-[1px] h-[18px] w-[18px] shrink-0"
+                style={{ color: C.plumDeep }}
+              />
+              <span
+                className="flex-1 text-[13px] leading-snug sm:text-[13.5px]"
+                style={{ color: C.inkBody }}
+              >
+                {b.title}
+              </span>
+              <span
+                className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em]"
+                style={{ background: C.plumDeep, color: C.gold }}
+              >
+                Free
+              </span>
+            </li>
+          ))}
+        </ul>
+        <p
+          className="mt-3 border-t pt-3 text-[12px] font-semibold"
+          style={{ borderColor: C.lineStrong, color: C.goldInk }}
+        >
+          All three come with your seat, at no extra cost.
+        </p>
+      </div>
+
+      {/* The schedule, read from the date and time variables. */}
+      <div
+        className="mt-4 rounded-2xl p-4"
+        style={{ background: C.canvasAlt, border: `1px dashed ${C.lineStrong}` }}
+      >
+        <p
+          className="flex items-center gap-2 font-display font-bold text-[14.5px]"
+          style={{ color: C.ink }}
+        >
+          <CalendarBlank weight="duotone" className="h-5 w-5" style={{ color: C.goldDeep }} />
+          Workshop Schedule
+        </p>
+        <ul className="mt-2.5 space-y-1.5 text-[13.5px]" style={{ color: C.inkBody }}>
+          {EVENTS.map((e) => (
+            <li key={e.day}>
+              <strong style={{ color: C.ink }}>Day {e.day}</strong> – {e.date} – {e.time}
+            </li>
+          ))}
+          <li className="flex items-center gap-1.5 pt-1" style={{ color: C.inkSoft }}>
+            <Translate weight="bold" className="h-3.5 w-3.5" style={{ color: C.goldDeep }} />
+            Language: Hindi &amp; English
+          </li>
+        </ul>
       </div>
 
       {/* Method */}
       <div
-        className="mt-5 flex items-start gap-3 rounded-2xl p-3"
+        className="mt-4 flex items-start gap-3 rounded-2xl p-3"
         style={{ background: C.canvasAlt, border: `1px solid ${C.line}` }}
       >
         <CreditCard weight="duotone" className="h-5 w-5 shrink-0" style={{ color: C.goldInk }} />
@@ -670,6 +779,143 @@ function OrderSummary() {
         </div>
       </div>
     </div>
+  );
+}
+
+/* ── The mobile sticky bar: both add-ons as one-line toggles and the pay
+      button, pinned to the bottom of the screen on phones only. It submits
+      the same form through the form attribute, so there is one payment path.
+      Hidden while the in-form add-ons and button are already on screen. ─── */
+function MobileCheckoutBar({
+  hidden,
+  busy,
+  recordings,
+  call,
+  onRecordings,
+  onCall,
+  total,
+}: {
+  hidden: boolean;
+  busy: boolean;
+  recordings: boolean;
+  call: boolean;
+  onRecordings: (v: boolean) => void;
+  onCall: (v: boolean) => void;
+  total: number;
+}) {
+  return (
+    <div
+      className={`fixed inset-x-0 bottom-0 z-40 transition-transform duration-300 lg:hidden ${
+        hidden ? 'pointer-events-none translate-y-full' : 'translate-y-0'
+      }`}
+      style={{
+        background: 'rgba(255,254,251,0.97)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        borderTop: `1px solid ${C.lineStrong}`,
+        boxShadow: '0 -14px 34px -22px rgba(38, 48, 74, 0.5)',
+        paddingBottom: 'env(safe-area-inset-bottom)',
+      }}
+      aria-hidden={hidden || undefined}
+    >
+      <div className="mx-auto max-w-xl space-y-2 px-3 pb-3 pt-3">
+        <MiniBump
+          label="Add workshop recordings"
+          price={RECORDING_PRICE_RUPEES}
+          checked={recordings}
+          onChange={onRecordings}
+          tabbable={!hidden}
+        />
+        <MiniBump
+          label="Add 1-on-1 call with Sunaina"
+          price={CALL_PRICE_RUPEES}
+          checked={call}
+          onChange={onCall}
+          tabbable={!hidden}
+        />
+        <button
+          type="submit"
+          form="checkout-form"
+          disabled={busy}
+          tabIndex={hidden ? -1 : undefined}
+          className="lego-press cta-shimmer inline-flex min-h-[54px] w-full items-center justify-center rounded-full px-6 text-[15.5px] font-bold disabled:opacity-60"
+          style={{
+            background: C.gold,
+            color: C.inkBody,
+            border: `1px solid ${C.goldDeep}`,
+            ['--shimmer' as string]: 'rgba(255,255,255,0.45)',
+          }}
+        >
+          {busy ? 'Taking you to payment…' : `Place Your Order · ${rupees(total)}`}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function MiniBump({
+  label,
+  price,
+  checked,
+  onChange,
+  tabbable,
+}: {
+  label: string;
+  price: number;
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  tabbable: boolean;
+}) {
+  return (
+    <label
+      className="kz-mini-bump flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5"
+      data-on={checked ? 'true' : 'false'}
+    >
+      <input
+        type="checkbox"
+        className="sr-only"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        tabIndex={tabbable ? undefined : -1}
+      />
+      <span
+        aria-hidden
+        className="kz-bump-box grid h-5 w-5 shrink-0 place-items-center rounded-md"
+        style={{
+          background: checked ? C.plumDeep : C.canvas,
+          border: `2px solid ${checked ? C.plumDeep : C.goldMid}`,
+        }}
+      >
+        {checked && <Check weight="bold" className="h-3 w-3" style={{ color: C.gold }} />}
+      </span>
+      <span className="flex-1 text-[13.5px] font-semibold" style={{ color: C.ink }}>
+        {label}
+      </span>
+      <span
+        className="shrink-0 font-display font-bold text-[14px] tabular-nums"
+        style={{ color: C.goldDeep }}
+      >
+        + {rupees(price)}
+      </span>
+    </label>
+  );
+}
+
+/* ── One ticked add-on in the order summary. ─────────────────────────── */
+function AddOnRow({ label, amount }: { label: string; amount: number }) {
+  return (
+    <li
+      className="flex items-start gap-2 rounded-xl px-3 py-2.5 text-[12.5px] sm:text-[13px]"
+      style={{ background: C.goldWash, border: `1px solid ${C.lineStrong}` }}
+    >
+      <CheckCircle weight="fill" className="mt-[2px] h-4 w-4 shrink-0" style={{ color: C.plumDeep }} />
+      <span className="flex-1 font-semibold leading-snug" style={{ color: C.ink }}>
+        {label}
+      </span>
+      <span className="shrink-0 font-bold tabular-nums" style={{ color: C.ink }}>
+        + {rupees(amount)}
+      </span>
+    </li>
   );
 }
 

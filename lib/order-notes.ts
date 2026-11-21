@@ -49,6 +49,12 @@ export type OrderContext = {
   fbclid: string;
   referrer: string;
   landingUrl: string;
+  /* What was bought and what each part cost, fixed at the moment the order
+     was created, so a later price change cannot rewrite a past sale. */
+  orderType: string;
+  baseAmount: string;
+  recordingAmount: string;
+  callAmount: string;
 };
 
 export const EMPTY_CONTEXT: OrderContext = {
@@ -72,6 +78,10 @@ export const EMPTY_CONTEXT: OrderContext = {
   fbclid: '',
   referrer: '',
   landingUrl: '',
+  orderType: '',
+  baseAmount: '',
+  recordingAmount: '',
+  callAmount: '',
 };
 
 const CHUNK_SIZE = 256;
@@ -111,6 +121,10 @@ const OTHER_CAPS: Partial<Record<keyof OrderContext, number>> = {
   utmCampaign: 100,
   utmContent: 100,
   utmTerm: 100,
+  orderType: 32,
+  baseAmount: 12,
+  recordingAmount: 12,
+  callAmount: 12,
 };
 
 function applyCaps(ctx: OrderContext): OrderContext {
