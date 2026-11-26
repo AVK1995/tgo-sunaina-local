@@ -41,6 +41,10 @@ type Person = {
   country?: string;
   /** The value of the checkout's "which best describes you" select. */
   occupation?: string;
+  /** The two add-on ticks. The CAPI route prices the order from these itself
+   *  rather than trusting a total posted by the browser. */
+  recordings?: boolean;
+  call?: boolean;
 };
 
 /** Fire-and-forget: analytics must never block or fail a click. */

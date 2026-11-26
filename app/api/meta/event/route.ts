@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { CHECKOUT_CONFIG, capiReady } from '@/lib/checkout-config';
+import { orderTypeFor, priceOrder } from '@/lib/order';
 import {
   sendCapiEvent,
   sha256Hex,
@@ -109,7 +110,14 @@ export async function POST(req: Request) {
         req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || undefined,
       clientUserAgent: req.headers.get('user-agent') ?? undefined,
     },
-    valueRupees: CHECKOUT_CONFIG.amountRupees,
+    /* The two checkout-form events carry the order as ticked, so their value
+       is the full total including add-ons, priced here from the ticks rather
+       than from a number the browser posts. The landing and arrival events have
+       no order yet and keep the workshop price. */
+    valueRupees:
+      eventName === 'InitiateCheckout' || eventName === 'QualifiedLead'
+        ? priceOrder(orderTypeFor(body.recordings === true, body.call === true)).totalAmount
+        : CHECKOUT_CONFIG.amountRupees,
     currency: CHECKOUT_CONFIG.currency,
     /* Only ever set on the two events fired from the checkout form; the
        landing-page events have no answer to send. */

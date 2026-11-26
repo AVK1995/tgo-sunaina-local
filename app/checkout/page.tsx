@@ -251,6 +251,8 @@ export default function CheckoutPage() {
       city: f.city.trim(),
       country: f.country,
       occupation: f.occupation,
+      recordings,
+      call,
     }, priced.totalAmount);
 
     try {
